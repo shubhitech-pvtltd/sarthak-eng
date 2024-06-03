@@ -5,26 +5,31 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 
-Route::view('/','pages.index');
 
 Route::get('/login',[LoginController::class,'login']);
 
 Route::post('/login',[LoginController::class,'SubmitLogin']);
 
-Route::view('/forgot-password','login.forgot-password');
+Route::middleware(['CheckAuth'])->group(function(){
 
-Route::get('/logout', function () {
-    session()->flush();
-    return redirect('/login');
+    Route::view('/','pages.index');
+
+    Route::view('/forgot-password','login.forgot-password');
+    
+    Route::get('/logout', function () {
+        session()->flush();
+        return redirect('/login');
+    });
+    
+    Route::view('/help','pages.help');
+    
+    Route::resource('/user' , UserController::class);
+    
+    Route::get('/client/data' , [ClientController::class,'getClients']);
+    
+    Route::resource('/client' , ClientController::class);
+    
 });
-
-Route::view('/help','pages.help');
-
-Route::resource('/user' , UserController::class);
-
-Route::get('/client/data' , [ClientController::class,'getClients']);
-
-Route::resource('/client' , ClientController::class);
 
 // resource controller meaning
 // GET         /user               index        show user list

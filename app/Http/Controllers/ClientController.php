@@ -45,6 +45,10 @@ class ClientController extends Controller
 
    public function store(Request $request)
    {
+      $request->validate([
+         'company_name' => 'required'
+      ]);
+      
       $client = Client::create([
                     "company_name" => $request->company_name,
                     "owner_name" => $request->owner_name,
@@ -64,7 +68,7 @@ class ClientController extends Controller
                     'created_by' => session('id'),
                     'updated_by' => session('id')]);
 
-        return redirect('/client');
+        return redirect('/client')->with('success','Client Added SuccessFully');
 
     }
 
@@ -75,6 +79,10 @@ class ClientController extends Controller
 
    public function update(Request $request,$id)
    {
+      $request->validate([
+        'company_name' => 'required'
+      ]);
+
       $client = Client::findorFail($id);
 
       $client->update(["company_name" => $request->company_name,
@@ -94,8 +102,7 @@ class ClientController extends Controller
                         "description" => $request->description,
                         'updated_by' => session('id')]);
 
-        return redirect('/client');
-
+        return redirect()->back()->with('success','Client Updated SuccessFully');
 
    }
 
