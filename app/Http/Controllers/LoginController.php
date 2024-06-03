@@ -10,31 +10,32 @@ class LoginController extends Controller
 {
    public function login()
    {
-      session()->forget('showMsg');
      	return view('login.login');
    }
 
    public function SubmitLogin(Request $req)
    {
      	$user = User::where('email', strtolower($req->email))->first();
+        if ($user){
+            if ((Hash::check($req->password, $user->password))) {
 
-      if ($user && (Hash::check($req->password, $user->password))) {
-
-      	  session([
-            'email' => $user->email,
-            'name'=> $user->name,
-            'id'=> $user->id,
-            'address'=> $user->address,
-            'mobile'=> $user->mobile,
-          ]);
-
-          return redirect('/');
-
-
-      }else{
-          session()->flash('showMsg','Incorrect data.');
-          return view('login.login');
-      }
+               session([
+               'email' => $user->email,
+               'name'=> $user->name,
+               'id'=> $user->id,
+               'address'=> $user->address,
+               'mobile'=> $user->mobile,
+            ]);
+   
+            return redirect('/');
+   
+            }else{
+               return redirect()->back()->with("error","Incorrect Password");
+            }
+         }else{
+               return redirect()->back()->with("error","User Not Found");
+        }
+      
    }
 
 }

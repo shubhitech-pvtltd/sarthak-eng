@@ -49,26 +49,33 @@ class ClientController extends Controller
          'company_name' => 'required'
       ]);
       
-      $client = Client::create([
-                    "company_name" => $request->company_name,
-                    "owner_name" => $request->owner_name,
-                    "office_phone" => $request->office_phone,
-                    "owner_phone" => $request->owner_phone,
-                    "company_email" => $request->company_email,
-                    "owner_email" => $request->owner_email,
-                    "address" => $request->address,
-                    "country" => $request->country,
-                    "gst_no" => $request->gst_no,
-                    "pan_no" => $request->pan_no,
-                    "bank_name" => $request->bank_name,
-                    "bank_branch" => $request->bank_branch,
-                    "bank_ifsc" => $request->bank_ifsc,
-                    "bank_acc_no" => $request->bank_acc_no,
-                    "description" => $request->description,
-                    'created_by' => session('id'),
-                    'updated_by' => session('id')]);
+      try{
+            Client::create([
+                            "company_name" => $request->company_name,
+                            "owner_name" => $request->owner_name,
+                            "office_phone" => $request->office_phone,
+                            "owner_phone" => $request->owner_phone,
+                            "company_email" => $request->company_email,
+                            "owner_email" => $request->owner_email,
+                            "address" => $request->address,
+                            "country" => $request->country,
+                            "gst_no" => $request->gst_no,
+                            "pan_no" => $request->pan_no,
+                            "bank_name" => $request->bank_name,
+                            "bank_branch" => $request->bank_branch,
+                            "bank_ifsc" => $request->bank_ifsc,
+                            "bank_acc_no" => $request->bank_acc_no,
+                            "description" => $request->description,
+                            'created_by' => session('id'),
+                            'updated_by' => session('id')]);
 
-        return redirect('/client')->with('success','Client Added SuccessFully');
+            return redirect('/client')->with('success','Client Added SuccessFully');
+
+        }catch(\Exception $e){
+            
+            return redirect()->back()->with('error','Error While Adding the Record');
+
+        }
 
     }
 
@@ -82,27 +89,32 @@ class ClientController extends Controller
       $request->validate([
         'company_name' => 'required'
       ]);
+      
+      try{
 
-      $client = Client::findorFail($id);
+        $client = Client::findorFail($id);
 
-      $client->update(["company_name" => $request->company_name,
-                        "owner_name" => $request->owner_name,
-                        "office_phone" => $request->office_phone,
-                        "owner_phone" => $request->owner_phone,
-                        "company_email" => $request->company_email,
-                        "owner_email" => $request->owner_email,
-                        "address" => $request->address,
-                        "country" => $request->country,
-                        "gst_no" => $request->gst_no,
-                        "pan_no" => $request->pan_no,
-                        "bank_name" => $request->bank_name,
-                        "bank_branch" => $request->bank_branch,
-                        "bank_ifsc" => $request->bank_ifsc,
-                        "bank_acc_no" => $request->bank_acc_no,
-                        "description" => $request->description,
-                        'updated_by' => session('id')]);
+        $client->update(["company_name" => $request->company_name,
+                            "owner_name" => $request->owner_name,
+                            "office_phone" => $request->office_phone,
+                            "owner_phone" => $request->owner_phone,
+                            "company_email" => $request->company_email,
+                            "owner_email" => $request->owner_email,
+                            "address" => $request->address,
+                            "country" => $request->country,
+                            "gst_no" => $request->gst_no,
+                            "pan_no" => $request->pan_no,
+                            "bank_name" => $request->bank_name,
+                            "bank_branch" => $request->bank_branch,
+                            "bank_ifsc" => $request->bank_ifsc,
+                            "bank_acc_no" => $request->bank_acc_no,
+                            "description" => $request->description,
+                            'updated_by' => session('id')]);
 
-        return redirect()->back()->with('success','Client Updated SuccessFully');
+            return redirect('/client')->with('success','Client Updated SuccessFully');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error','Error While Updating the Record');
+        }
 
    }
 

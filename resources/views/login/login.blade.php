@@ -1,22 +1,11 @@
 @include('layout.head')
 <body>
-    
-    
-
 	<div class="login-wrap customscroll d-flex align-items-center flex-wrap justify-content-center pd-20">
 
 		<div class="login-box bg-white box-shadow pd-30 border-radius-5">
 
 			<img src="{{url('images/login-img.png')}}" alt="login" class="login-img">
 			<h2 class="text-center mb-30">Login</h2>
-
-			<!-- Show msg about password change or faliure etc. -->
-		    @if(session()->has('showMsg'))
-		    <div class="pd-5">
-	        <strong class="text-danger">{{session('showMsg')}}</strong>
-		    </div>
-		    @endif
-
 
 			<form method="post" action="{{url('/login')}}">
         
