@@ -1,0 +1,1 @@
+<p>Dear Sir/Madam, </br> Your One Time Password (OTP) is : <strong>{{$otp}}</strong>. Your OTP will expire in 10 minutes. Do not share your OTP with anyone.</p>
