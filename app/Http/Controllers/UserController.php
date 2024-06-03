@@ -31,7 +31,7 @@ class UserController extends Controller
       $user->role_id = $request['role_id'];
       $user->save();
 
-      return redirect('/user/create');
+      return redirect('/user');
 
     }
 
