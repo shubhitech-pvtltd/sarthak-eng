@@ -87,7 +87,22 @@ class ClientController extends Controller
    public function update(Request $request,$id)
    {
       $request->validate([
-        'company_name' => 'required'
+        'company_name' => 'required',
+        'owner_name' => 'required',
+        'office_phone' => 'required',
+        'company_email' => 'required',
+        'owner_email' => 'required',
+        'address' => 'required',
+        'country' => 'required',
+        'gst_no' => 'required',
+        'pan_no' => 'required',
+        'bank_name' => 'required',
+        'bank_branch' => 'required',
+        'bank_ifsc' => 'required',
+        'bank_acc_no' => 'required',
+        'description' => 'required',
+       
+
       ]);
       
       try{
