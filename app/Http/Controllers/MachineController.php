@@ -70,7 +70,7 @@ class MachineController extends Controller
     {
         $request->validate([
             'machine_name' => 'required',
-            'description' => 'required',
+            'description' => '',
             'model_no' => 'required',
         ]);
 
