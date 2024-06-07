@@ -19,6 +19,7 @@
 
     <div class="col-md-12">
     <form action="{{isset($client) ? url('/client/'.$client->id) : url('/client')}}" method="post">
+
         
         <!-- CSRF Token -->
         @csrf
