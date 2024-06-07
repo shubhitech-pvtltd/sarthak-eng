@@ -23,6 +23,28 @@
 						</a>
 						
 					</li>
+					
+					<li class="dropdown">
+						<a href="{{url('/machine')}}" class="dropdown-toggle no-arrow">
+							<span class="fa fa-table"></span><span class="mtext">	Machine</span>
+						</a>
+						
+					</li>
+
+					<li class="dropdown">
+						<a href="{{url('/spare')}}" class="dropdown-toggle no-arrow">
+							<span class="fa fa-table"></span><span class="mtext">Spare</span>
+						</a>
+						
+					</li>
+
+					<li class="dropdown">
+						<a href="{{url('/spare')}}" class="dropdown-toggle no-arrow">
+							<span class="fa fa-table"></span><span class="mtext">Price</span>
+						</a>
+						
+					</li>
+					
 					{{-- <li class="dropdown">
 						<a href="{{url('/datewisetransaction')}}" class="dropdown-toggle no-arrow">
 							<span class="fa fa-regular fa-calendar"></span><span class="mtext">Date Wise <br>Transactions</span>

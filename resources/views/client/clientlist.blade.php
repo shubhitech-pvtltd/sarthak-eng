@@ -16,10 +16,10 @@
             <table class="data-table stripe hover nowrap">
                 <thead>
                     <tr>
-                        <th class="table-plus datatable-nosort">Name</th>
-                        <th>Email</th>
-                        <th>Mobile</th>
-                        <th>Address</th>
+                        <th class="table-plus datatable-nosort">Company Name </th>
+                        <th>Owner Name</th>
+                        <th>Company Email</th>
+                        <th>Owner Mobile No</th>
                         <th class="datatable-nosort">Action</th>
                     </tr>
                 </thead>
@@ -38,9 +38,9 @@
                 ajax: '{!! url('/client/data') !!}',
                 columns: [
                     { data: 'company_name', name: 'company_name' },
-                    { data: 'company_email', name: 'company_email' },
                     { data: 'owner_name', name: 'owner_name' },
-                    { data: 'address', name: 'address' },
+                    { data: 'company_email', name: 'company_email' },
+                    { data: 'owner_phone_no', name: 'owner_phone_no' },
                     { data: 'action', name: 'action', orderable: false, searchable: false }
                 ]
         });
