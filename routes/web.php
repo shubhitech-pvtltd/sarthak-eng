@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
-
+use App\Http\Controllers\CustomerWisePriceController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SpareController;
 
@@ -36,10 +36,11 @@ Route::middleware(['CheckAuth'])->group(function(){
 
     Route::resource('/machine', MachineController::class);
     
-
     Route::get('/spare/data' , [SpareController::class,'getSpares']);
 
     Route::resource('/spare', SpareController::class);
+
+    Route::get('/customer-wise-price', [CustomerWisePriceController::class, 'index']);
 });
 
 
