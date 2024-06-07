@@ -60,24 +60,24 @@
         <div class="form-group row">
             <div class="col-sm-6 fw-bold">
                 <label class="col-form-label">First Name<span class="text-danger">*</span></label>
-                <input type="text" name="first_name" value="{{isset($user) ? $user->first_name : ''}}" required class="form-control" placeholder="Enter your first name">
+                <input type="text" name="first_name" value="{{isset($user) ? $user->first_name : ''}}" required class="form-control" placeholder="Enter Your First Name">
             </div> 
             <div class="col-sm-6 fw-bold">
                 <label class="col-form-label">Last Name<span class="text-danger"></span></label>
-                <input type="text" name="last_name" value="{{isset($user) ? $user->last_name : ''}}"  class="form-control" placeholder="Enter your last name">
+                <input type="text" name="last_name" value="{{isset($user) ? $user->last_name : ''}}"  class="form-control" placeholder="Enter Your Last Name">
             </div> 
         </div>
         <div class="form-group row">
             <div class="col-sm-12">
                 <label class="col-form-label fw-bold">Email-ID<span class="text-danger">*</span></label>
-                <input type="email" name="email" required value="{{isset($user) ? $user->email : ''}}" class="form-control" id="email" placeholder="Enter your email id">
+                <input type="email" name="email" required value="{{isset($user) ? $user->email : ''}}" class="form-control" id="email" placeholder="Enter Your Email Id">
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-sm-6">
                 <label class="col-form-label fw-bold">Mobile<span class="text-danger">*</span></label>
-                <input type="integer" name="mobile" required value="{{isset($user) ? $user->mobile : ''}}" class="form-control" id="mobile" placeholder="Enter your mobile" >
+                <input type="integer" name="mobile" required value="{{isset($user) ? $user->mobile : ''}}" class="form-control" id="mobile" placeholder="Enter Your Mobile" >
             </div>
             <div class="col-sm-6">
     <label class="col-form-label fw-bold">Gender<span class="text-danger">*</span></label>
@@ -94,7 +94,7 @@
         <div class="form-group row">
             <div class="col-sm-12">
             <label class="col-form-label fw-bold">Address<span class="text-danger"></span></label>
-            <textarea class="form-control" name="address"cols="10" rows="2"  value="{{isset($user) ? $user->address : '' }}" class="form-control" id="address" placeholder="Address"></textarea>
+            <textarea class="form-control" name="address"cols="10" rows="2"  value="{{isset($user) ? $user->address : '' }}" class="form-control" id="address" placeholder=" Enter Your Address"></textarea>
             </div>
         </div>
         <div class="form-group icon-input text-center">

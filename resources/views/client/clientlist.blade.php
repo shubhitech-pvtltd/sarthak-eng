@@ -19,7 +19,7 @@
                         <th class="table-plus datatable-nosort">Company Name </th>
                         <th>Owner Name</th>
                         <th>Company Email</th>
-                        <th>Owner Mobile No</th>
+                        <th>Owner Mobile No.</th>
                         <th class="datatable-nosort">Action</th>
                     </tr>
                 </thead>

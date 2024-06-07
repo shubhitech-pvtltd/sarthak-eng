@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Spare;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 use App\Models\Machine;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SpareController extends Controller
 {
@@ -19,23 +19,9 @@ class SpareController extends Controller
 
     public function getSpares()
     {
-        $spares = Spare::select([
-            'spares.id', 
-            'spares.part_no' ,
-            'spares.description', 
-            'spares.purchase_from', 
-            'spares.buying_price', 
-            'spares.selling_price', 
-            'spares.drawing_upload', 
-            'spares.gea_selling_price', 
-            'spares.unit', 
-            'spares.hsn_code', 
-            'spares.currency', 
-            'spares.dimension', 
-            'machines.machine_name'
-        ])
-        ->join('machines', 'spares.machine_id', '=', 'machines.id')
-        ->get();
+        $spares = Spare::select(['spares.id', 'spares.part_no' ,'spares.description', 'spares.purchase_from', 'spares.buying_price', 'spares.selling_price', 'spares.drawing_upload', 'spares.gea_selling_price', 'spares.unit', 'spares.hsn_code', 'spares.currency', 'spares.dimension', 'machines.machine_name'])
+            ->join('machines', 'spares.machine_id', '=', 'machines.id')
+            ->get();
 
         return DataTables::of($spares)
             ->addColumn('action', function ($spare) {
@@ -63,21 +49,27 @@ class SpareController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'machine_id' => 'required',
+            'machine_id' => '',
             'part_no' => 'required',
             'description' => 'required',
-            'drawing_upload' => '', // Adjust file types and maximum size as needed
+            'purchase_from'=>'',
+            // 'drawing_upload' => 'mimes:pdf,jpg,jpeg,png'
         ]);
         
         try {
-            $imgName = null;
             if ($request->hasFile('drawing_upload')) {
-                $imgName = "Spare_" . Str::random(30) . "." . $request->file('drawing_upload')->getClientOriginalExtension();
-                $path = $request->file('drawing_upload')->storeAs('images/upload/sparedrawing', $imgName);
-                
-                if (!$path) {
-                    throw new \Exception('File upload failed');
+                $imgName = "Sarthak" . Str::random(30) . "." . $request->file('drawing_upload')->getClientOriginalExtension();
+                $file = $request->file('drawing_upload');    
+                $path = $file->move('images/upload/sparedrawing', $imgName);
+            
+                if ($path) {                  
+                    Log::info('File upload: ' . $path);
+                } else {
+                    $error = $file->getErrorMessage();
+                    Log::error('File upload failed: ' . $error);
                 }
+            } else {
+                Log::error('No file uploaded');
             }
             
             Spare::create([
@@ -87,7 +79,7 @@ class SpareController extends Controller
                 "purchase_from" => $request->purchase_from,
                 "buying_price" => $request->buying_price,
                 "selling_price" => $request->selling_price,
-                "drawing_upload" => $imgName,
+                "drawing_upload" => $imgName ?? null,
                 "gea_selling_price" => $request->gea_selling_price,
                 "unit" => $request->unit,
                 "hsn_code" => $request->hsn_code,
@@ -116,8 +108,9 @@ class SpareController extends Controller
             'machine_id' => 'required',
             'part_no' => 'required',
             'description' => 'required',
-            'drawing_upload' => 'image|mimes:jpeg,png,jpg|max:2048', // Adjust file types and maximum size as needed
+            // 'drawing_upload' => 'mimes:pdf,jpg,jpeg,png'
         ]);
+        dd($spare);
 
         try {
             $spare = Spare::findOrFail($id);
@@ -138,28 +131,23 @@ class SpareController extends Controller
             ]);
 
             if ($request->hasFile('drawing_upload')) {
-                // Delete the old image file
                 Storage::delete($spare->drawing_upload);
-                // Store the new image file
-                $imgName = "Spare_" . Str::random(30) . "." . $request->file('drawing_upload')->getClientOriginalExtension();
-                $path = $request->file('drawing_upload')->storeAs('images/upload/sparedrawing', $imgName);
-                // Update the database record with the new file name
+                $imgName = "Sarthak" . Str::random(30) . "." . $request->file('drawing_upload')->getClientOriginalExtension();
+                $path = $request->file('drawing_upload')->move('images/upload/sparedrawing', $imgName);
+               
                 $spare->update([
                     "drawing_upload" => $imgName,
                 ]);
             }
-
             return redirect('/spare')->with('success', 'Spare updated successfully');
         } catch(\Exception $e) {
             Log::error('Error while updating the record: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error while updating the record');
         }
     }
-
     public function destroy($id)
     {
         $result = Spare::destroy($id);
-        // You might want to add some logic here for handling the result
     }
 }
 

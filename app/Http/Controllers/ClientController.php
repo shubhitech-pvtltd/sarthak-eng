@@ -55,6 +55,7 @@ class ClientController extends Controller
         'company_email' => 'required|email',
         'company_phone_no' => 'required',
         'company_address' => '',
+        'country'=>'required',
        
       ]);
       
@@ -74,6 +75,7 @@ class ClientController extends Controller
                             "bank_branch_name" => $request->bank_branch_name,
                             "bank_name"=>$request->bank_name,
                             "account_no" => $request->account_no,
+                            "country"=>$request->country,
                             "ifsc_no" => $request->ifsc_no,
                             // "bank_address" => $request->bank_address,
                             'created_by' => session('id'),
@@ -130,13 +132,15 @@ class ClientController extends Controller
             "company_cin_no" => $request->company_cin_no,
             "company_address" => $request->company_address,
             "bank_branch_name"=>$request->bank_branch_name,
-            "baccount_no" => $request->account_no,
+            "account_no" => $request->account_no,
+            "country"=>$request->country,
             "ifsc_no" => $request->ifsc_no,
             // "bank_address" => $request->bank_address,
             'updated_by' => session('id')]);
 
             return redirect('/client')->with('success','Client Updated SuccessFully');
         }catch(\Exception $e){
+            Log::error($e);
             return redirect()->back()->with('error','Error While Updating the Record');
         }
 
