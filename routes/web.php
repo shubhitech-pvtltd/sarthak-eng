@@ -5,6 +5,9 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 
+use App\Http\Controllers\MachineController;
+use App\Http\Controllers\SpareController;
+
 
 Route::get('/login',[LoginController::class,'login']);
 
@@ -28,8 +31,28 @@ Route::middleware(['CheckAuth'])->group(function(){
     Route::get('/client/data' , [ClientController::class,'getClients']);
     
     Route::resource('/client' , ClientController::class);
+
+    Route::get('/machine/data' , [MachineController::class,'getMachines']);
+
+    Route::resource('/machine', MachineController::class);
     
+
+    Route::get('/spare/data' , [SpareController::class,'getSpares']);
+
+    Route::resource('/spare', SpareController::class);
 });
+
+
+
+// Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');
+
+// Route::get('/machines/{machine}/edit', [MachineController::class, 'edit'])->name('machines.edit');
+
+
+// Route::put('/machines/{machine}', [MachineController::class, 'update'])->name('machines.update');
+
+// Route::delete('/machines/{machine}', [MachineController::class, 'destroy'])->name('machines.destroy');
+
 
 // resource controller meaning
 // GET         /user               index        show user list

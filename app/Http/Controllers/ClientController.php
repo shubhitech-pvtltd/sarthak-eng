@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Log;
+
 
 
 class ClientController extends Controller
@@ -18,7 +20,7 @@ class ClientController extends Controller
   //  For Server Side Datatable
    public function getClients()
    {
-        $clients = Client::select(['id', 'company_name', 'company_email', 'owner_name', 'address']);
+        $clients = Client::select(['id', 'company_name', 'owner_name', 'company_email','owner_phone_no']);
 
         return DataTables::of($clients)
             ->addColumn('action', function ($client) {
@@ -45,34 +47,44 @@ class ClientController extends Controller
 
    public function store(Request $request)
    {
+
       $request->validate([
-         'company_name' => 'required'
+         'owner_name' => 'required',
+         'owner_email' => 'required',
+         'owner_phone_no' => 'required',
+         'owner_aadhar_no' => '',
+        'company_name' => 'required',
+        'company_email' => 'required|email',
+        'company_phone_no' => 'required',
+        'company_address' => '',
+       
       ]);
       
       try{
             Client::create([
-                            "company_name" => $request->company_name,
                             "owner_name" => $request->owner_name,
-                            "office_phone" => $request->office_phone,
-                            "owner_phone" => $request->owner_phone,
-                            "company_email" => $request->company_email,
                             "owner_email" => $request->owner_email,
-                            "address" => $request->address,
-                            "country" => $request->country,
-                            "gst_no" => $request->gst_no,
-                            "pan_no" => $request->pan_no,
-                            "bank_name" => $request->bank_name,
-                            "bank_branch" => $request->bank_branch,
-                            "bank_ifsc" => $request->bank_ifsc,
-                            "bank_acc_no" => $request->bank_acc_no,
-                            "description" => $request->description,
+                            "owner_phone_no" => $request->owner_phone_no,
+                            "owner_aadhar_no" => $request->owner_aadhar_no,
+                            "company_name" => $request->company_name,
+                            "company_email" => $request->company_email,
+                            "company_phone_no" => $request->company_phone_no,
+                            "company_pan_no" => $request->company_pan_no,
+                            "company_gst_no" => $request->company_gst_no,
+                            "company_cin_no" => $request->company_cin_no,
+                            "company_address" => $request->company_address,
+                            "bank_branch_name" => $request->bank_branch_name,
+                            "bank_name"=>$request->bank_name,
+                            "account_no" => $request->account_no,
+                            "ifsc_no" => $request->ifsc_no,
+                            // "bank_address" => $request->bank_address,
                             'created_by' => session('id'),
                             'updated_by' => session('id')]);
 
             return redirect('/client')->with('success','Client Added SuccessFully');
 
         }catch(\Exception $e){
-            
+            Log::error($e);
             return redirect()->back()->with('error','Error While Adding the Record');
 
         }
@@ -87,20 +99,18 @@ class ClientController extends Controller
    public function update(Request $request,$id)
    {
       $request->validate([
-        'company_name' => 'required',
         'owner_name' => 'required',
-        'office_phone' => 'required',
-        'company_email' => 'required',
         'owner_email' => 'required',
-        'address' => 'required',
-        'country' => 'required',
-        'gst_no' => 'required',
-        'pan_no' => 'required',
-        'bank_name' => 'required',
-        'bank_branch' => 'required',
-        'bank_ifsc' => 'required',
-        'bank_acc_no' => 'required',
-        'description' => 'required',
+        'owner_phone_no' => 'required',
+        'owner_aadhar_no' => '',
+       'company_name' => 'required',
+       'company_email' => 'required|email',
+       'company_phone_no' => 'required',
+       'company_pan_no' => '',
+       'company_gst_no' => '',
+       'company_cin_no' => '',
+       'country' => '',
+       'company_address' => '',
        
 
       ]);
@@ -109,22 +119,23 @@ class ClientController extends Controller
 
         $client = Client::findorFail($id);
 
-        $client->update(["company_name" => $request->company_name,
-                            "owner_name" => $request->owner_name,
-                            "office_phone" => $request->office_phone,
-                            "owner_phone" => $request->owner_phone,
-                            "company_email" => $request->company_email,
-                            "owner_email" => $request->owner_email,
-                            "address" => $request->address,
-                            "country" => $request->country,
-                            "gst_no" => $request->gst_no,
-                            "pan_no" => $request->pan_no,
-                            "bank_name" => $request->bank_name,
-                            "bank_branch" => $request->bank_branch,
-                            "bank_ifsc" => $request->bank_ifsc,
-                            "bank_acc_no" => $request->bank_acc_no,
-                            "description" => $request->description,
-                            'updated_by' => session('id')]);
+        $client->update([
+            "owner_name" => $request->owner_name,
+            "owner_email" => $request->owner_email,
+            "owner_phone_no" => $request->owner_phone_no,
+            "owner_aadhar_no" => $request->owner_aadhar_no,
+            "company_name" => $request->company_name,
+            "company_email" => $request->company_email,
+            "company_phone_no" => $request->company_phone_no,
+            "company_pan_no" => $request->company_pan_no,
+            "company_gst_no" => $request->company_gst_no,
+            "company_cin_no" => $request->company_cin_no,
+            "company_address" => $request->company_address,
+            "bank_branch_name"=>$request->bank_branch_name,
+            "baccount_no" => $request->account_no,
+            "ifsc_no" => $request->ifsc_no,
+            // "bank_address" => $request->bank_address,
+            'updated_by' => session('id')]);
 
             return redirect('/client')->with('success','Client Updated SuccessFully');
         }catch(\Exception $e){

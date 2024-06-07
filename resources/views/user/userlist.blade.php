@@ -2,6 +2,7 @@
 
     
 @section('main-section')
+
 <div class="main-container mt-5 ml-4">
     <!-- Datatable start -->
     <div class="pd-20 bg-white border-radius-4 box-shadow mb-30">
@@ -28,7 +29,7 @@
                 <tbody>
                     @foreach ($users as $user)
                     <tr>
-                        <td class="table-plus">{{$user->name}}</td>
+                        <td class="table-plus">{{$user->first_name}} {{$user->last_name}}</td>
                         <td><span  class="badge badge-success">{{getRoleName($user->role_id)}}</span></td>
                         <td>{{$user->email}}</td>
                         <td>{{$user->mobile}}</td>
