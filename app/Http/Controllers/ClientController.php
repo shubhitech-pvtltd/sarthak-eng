@@ -7,8 +7,6 @@ use App\Models\Client;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log;
 
-
-
 class ClientController extends Controller
 {
    public function index(){
