@@ -24,7 +24,7 @@
         @csrf
 
         {{-- Method PUT for Update --}}
-        @isset($user)
+        @isset($machine)
            @method('PUT')    
         @endisset
         
@@ -32,19 +32,19 @@
 
         <div class="form-group row">
             <div class="col-sm-6 fw-bold">
-                <label class="col-form-label">machine Name<span class="text-danger">*</span></label>
-                <input type="text" name="machine_name" value="{{isset($machine) ? $machine->machine_name : ''}}" class="form-control" placeholder="machine Name">
+                <label class="col-form-label">Machine Name<span class="text-danger">*</span></label>
+                <input type="text" name="machine_name" value="{{isset($machine) ? $machine->machine_name : ''}}" class="form-control" placeholder="Enter Machine Name">
             </div>
             <div class="col-sm-6 fw-bold">
-                <label class="col-form-label">Model No<span class="text-danger">*</span></label>
-                <input type="model_no" name="model_no" value="{{isset($machine) ? $machine->model_no : ''}}" class="form-control" placeholder="Enter Model No ">
+                <label class="col-form-label">Model No.<span class="text-danger">*</span></label>
+                <input type="model_no" name="model_no" value="{{isset($machine) ? $machine->model_no : ''}}" class="form-control" placeholder="Enter Model No. ">
             </div>
         </div> 
         
           <div class="form-group row">
             <div class="col-sm-12">
             <label class="col-form-label fw-bold">Description<span class="text-danger">*</span></label>
-            <textarea class="form-control" cols="10" rows="2" name="description" value="{{isset($machine) ? $machine->description : ''}}"  class="form-control" id="name" placeholder="Enter your Description "></textarea>
+            <textarea class="form-control" cols="10" rows="2" name="description" value="{{isset($machine) ? $machine->description : ''}}"  class="form-control" id="name" placeholder="Enter Your Description "></textarea>
             </div>
         </div>  
         <div class="form-group icon-input text-center">
