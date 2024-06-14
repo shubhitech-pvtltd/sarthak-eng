@@ -20,22 +20,25 @@ class SpareController extends Controller
     public function getSpares()
     {
         $spares = Spare::select([
-            'spares.id', 
-            'spares.part_no' ,
-            'spares.description', 
-            'spares.purchase_from', 
-            'spares.buying_price', 
-            'spares.selling_price', 
-            'spares.drawing_upload', 
-            'spares.gea_selling_price', 
-            'spares.unit', 
-            'spares.hsn_code', 
-            'spares.currency', 
-            'spares.dimension', 
+            'spares.id',
+            'spares.part_no',
+            'spares.description',
+            'spares.purchase_from',
+            'spares.buying_price',
+            'spares.selling_price',
+            'spares.drawing_upload',
+            'spares.gea_selling_price',
+            'spares.unit',
+            'spares.hsn_code',
+            'spares.currency',
+            'spares.dimension',
             'machines.machine_name'
         ])
         ->join('machines', 'spares.machine_id', '=', 'machines.id')
+        ->orderBy('machines.machine_name', 'asc')
         ->get();
+
+       
 
         return DataTables::of($spares)
             ->addColumn('action', function ($spare) {
@@ -56,33 +59,54 @@ class SpareController extends Controller
 
     public function create()
     {
-        $machines = Machine::all(); 
+        // $machines = Machine::all();
+        $machines = Machine::all()->sortBy('machine_name'); 
         return view('spare.addsparepart', compact('machines'));
     }
 
     public function store(Request $request)
     {
+        
+
+
         $request->validate([
             'machine_id' => 'required',
             'part_no' => 'required',
             'description' => 'required',
-            'drawing_upload' => '', // Adjust file types and maximum size as needed
+            'purchase_from' => 'required',
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'gea_selling_price' => 'required|numeric',
+            'unit' => 'required|string',
+            'hsn_code' => 'required|string',
+            'currency' => 'required|string',
+            'dimension' => 'required|string',
+            'drawing_upload' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
-        
+
         try {
             $imgName = null;
             if ($request->hasFile('drawing_upload')) {
-                $imgName = "Spare_" . Str::random(30) . "." . $request->file('drawing_upload')->getClientOriginalExtension();
-                $path = $request->file('drawing_upload')->storeAs('images/upload/sparedrawing', $imgName);
-                
-                if (!$path) {
+                Log::info('File found in the request');
+                $file = $request->file('drawing_upload');
+                $imgName = "Spare_" . Str::random(30) . "." . $file->getClientOriginalExtension();
+                // $path = $file->storeAs('images/upload/sparedrawing', $imgName);
+                $path = $file->storeAs('public/images/upload/sparedrawing', $imgName);
+
+                if ($path) {
+                    Log::info('File uploaded successfully: ' . $path);
+                } else {
+                    Log::error('File upload failed');
                     throw new \Exception('File upload failed');
                 }
+            } else {
+                Log::info('No file found in the request');
             }
             
+
             Spare::create([
-                "machine_id" => $request->machine_id,   
-                "part_no" => $request->part_no,          
+                "machine_id" => $request->machine_id,
+                "part_no" => $request->part_no,
                 "description" => $request->description,
                 "purchase_from" => $request->purchase_from,
                 "buying_price" => $request->buying_price,
@@ -95,10 +119,12 @@ class SpareController extends Controller
                 "dimension" => $request->dimension,
                 'created_by' => session('id'),
                 'updated_by' => session('id')
+                
             ]);
+         
 
             return redirect('/spare')->with('success', 'Spare added successfully');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error while adding the record: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error while adding the record');
         }
@@ -106,7 +132,9 @@ class SpareController extends Controller
 
     public function edit(Spare $spare)
     {
-        $machines = Machine::all(); 
+        
+        // $machines = Machine::all();
+        $machines = Machine::all()->sortBy('machine_name'); 
         return view('spare.addsparepart', compact('machines', 'spare'));
     }
 
@@ -116,15 +144,23 @@ class SpareController extends Controller
             'machine_id' => 'required',
             'part_no' => 'required',
             'description' => 'required',
-            'drawing_upload' => 'image|mimes:jpeg,png,jpg|max:2048', // Adjust file types and maximum size as needed
+            'purchase_from' => 'required',
+            'buying_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'gea_selling_price' => 'required|numeric',
+            'unit' => 'required|string',
+            'hsn_code' => 'required|string',
+            'currency' => 'required|string',
+            'dimension' => 'required|string',
+            'drawing_upload' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try {
             $spare = Spare::findOrFail($id);
 
             $spare->update([
-                "machine_id" => $request->machine_id, 
-                "part_no" => $request->part_no,  
+                "machine_id" => $request->machine_id,
+                "part_no" => $request->part_no,
                 "description" => $request->description,
                 "purchase_from" => $request->purchase_from,
                 "buying_price" => $request->buying_price,
@@ -138,29 +174,35 @@ class SpareController extends Controller
             ]);
 
             if ($request->hasFile('drawing_upload')) {
-                // Delete the old image file
-                Storage::delete($spare->drawing_upload);
-                // Store the new image file
-                $imgName = "Spare_" . Str::random(30) . "." . $request->file('drawing_upload')->getClientOriginalExtension();
-                $path = $request->file('drawing_upload')->storeAs('images/upload/sparedrawing', $imgName);
-                // Update the database record with the new file name
-                $spare->update([
-                    "drawing_upload" => $imgName,
-                ]);
+                Log::info('File found in the request');             
+                Storage::delete($spare->drawing_upload);             
+                $file = $request->file('drawing_upload');
+                $imgName = "Spare_" . Str::random(30) . "." . $file->getClientOriginalExtension();           
+                $path = $file->storeAs('public/images/upload/sparedrawing', $imgName);
+                if ($path) {
+                    Log::info('File uploaded successfully: ' . $path);
+                   
+                    $spare->update([
+                        "drawing_upload" => $imgName,
+                    ]);
+                } else {
+                    Log::error('File upload failed');
+                    throw new \Exception('File upload failed');
+                }
+            } else {
+                Log::info('No file found in the request');
             }
 
             return redirect('/spare')->with('success', 'Spare updated successfully');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Error while updating the record: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error while updating the record');
         }
     }
 
+
     public function destroy($id)
     {
-        $result = Spare::destroy($id);
-        // You might want to add some logic here for handling the result
+       $result = Spare::destroy($id);
     }
 }
-
-    

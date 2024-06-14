@@ -1,6 +1,9 @@
-    {{-- <div class="footer-wrap bg-white pd-20 mb-20 border-radius-5 box-shadow">
-		Developed By - Saksham Goyal
-	</div> --}}
+     <!-- <div class="footer-wrap bg-white pd-20 mb-20 border-radius-5 box-shadow">
+     COPYRIGHT © <a class="text-dark" href="https://sarthakengineering.com/" target="_blank">Sarthak Engineering</a> 
+    All Rights Reserved | Powered by 
+    <a class="text-dark" href="https://www.shubhitech.com/" target="_blank">ShubhiTech</a>®
+	</div>  -->
+    
 	
 <script>
     @if ($errors->any())

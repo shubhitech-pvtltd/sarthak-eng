@@ -39,7 +39,7 @@
 					</li>
 
 					<li class="dropdown">
-						<a href="{{url('/customer-wise-price')}}" class="dropdown-toggle no-arrow">
+						<a href="{{url('/customerprice')}}" class="dropdown-toggle no-arrow">
 							<span class="fa fa-wallet"></span><span class="mtext">Price</span>
 						</a>
 						

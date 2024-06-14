@@ -1,6 +1,6 @@
 @extends('layout.main')
 
-    
+
 @section('main-section')
 <div class="main-container mt-5 ml-4">
     <div class="pd-20 bg-white border-radius-4 box-shadow mb-30">
@@ -23,7 +23,7 @@
                         <th class="datatable-nosort">Action</th>
                     </tr>
                 </thead>
-                
+
             </table>
         </div>
     </div>
@@ -31,20 +31,38 @@
 
 
 <script>
-       
-       $('.data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: '{!! url('/client/data') !!}',
-                columns: [
-                    { data: 'company_name', name: 'company_name' },
-                    { data: 'owner_name', name: 'owner_name' },
-                    { data: 'company_email', name: 'company_email' },
-                    { data: 'owner_phone_no', name: 'owner_phone_no' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false }
-                ]
-        });
-        
+$('.data-table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: "{!! url('/client/data') !!}",
+    columns: [{
+            data: 'company_name',
+            name: 'company_name'
+        },
+        {
+            data: 'owner_name',
+            name: 'owner_name'
+        },
+        {
+            data: 'company_email',
+            name: 'company_email'
+        },
+        {
+            data: 'owner_phone_no',
+            name: 'owner_phone_no'
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
+    ],
+    "language": {
+        "info": "_START_-_END_ of _TOTAL_ entries",
+        searchPlaceholder: "Search"
+    },
+});
 </script>
 
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.js') }}"></script>

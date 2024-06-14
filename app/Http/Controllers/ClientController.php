@@ -15,8 +15,9 @@ class ClientController extends Controller
 
    }
 
-  //  For Server Side Datatable
+
    public function getClients()
+   
    {
         $clients = Client::select(['id', 'company_name', 'owner_name', 'company_email','owner_phone_no']);
 
@@ -40,8 +41,11 @@ class ClientController extends Controller
 
    public function create()
    {
+
+   
      return view('client.addclient');
    }
+ 
 
    public function store(Request $request)
    {
@@ -54,8 +58,9 @@ class ClientController extends Controller
         'company_name' => 'required',
         'company_email' => 'required|email',
         'company_phone_no' => 'required',
-        'company_address' => '',
         'country'=>'required',
+   
+        
        
       ]);
       
@@ -71,11 +76,15 @@ class ClientController extends Controller
                             "company_pan_no" => $request->company_pan_no,
                             "company_gst_no" => $request->company_gst_no,
                             "company_cin_no" => $request->company_cin_no,
-                            "company_address" => $request->company_address,
+                            'company_address_1' =>  $request->company_address_1,
+                             "company_address_2" => $request->company_address_2,
+                             "country"=>$request->country,
+                            "state" => $request->state,
+                            "city" =>$request->city,
+                            "pincode" =>$request->pincode,
                             "bank_branch_name" => $request->bank_branch_name,
                             "bank_name"=>$request->bank_name,
                             "account_no" => $request->account_no,
-                            "country"=>$request->country,
                             "ifsc_no" => $request->ifsc_no,
                             // "bank_address" => $request->bank_address,
                             'created_by' => session('id'),
@@ -106,11 +115,7 @@ class ClientController extends Controller
        'company_name' => 'required',
        'company_email' => 'required|email',
        'company_phone_no' => 'required',
-       'company_pan_no' => '',
-       'company_gst_no' => '',
-       'company_cin_no' => '',
-       'country' => '',
-       'company_address' => '',
+
        
 
       ]);
@@ -130,10 +135,14 @@ class ClientController extends Controller
             "company_pan_no" => $request->company_pan_no,
             "company_gst_no" => $request->company_gst_no,
             "company_cin_no" => $request->company_cin_no,
-            "company_address" => $request->company_address,
+            'company_address_1' =>  $request->company_address_1,
+            "company_address_2" => $request->company_address_2,
+            "country"=>$request->country,
+            "state" => $request->state,
+            "city" =>$request->city,
+            "pincode" =>$request->pincode,
             "bank_branch_name"=>$request->bank_branch_name,
             "account_no" => $request->account_no,
-            "country"=>$request->country,
             "ifsc_no" => $request->ifsc_no,
             // "bank_address" => $request->bank_address,
             'updated_by' => session('id')]);
@@ -145,8 +154,6 @@ class ClientController extends Controller
         }
 
    }
-
-   
 
     public function destroy($id)
     {

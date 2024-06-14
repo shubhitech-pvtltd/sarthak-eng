@@ -40,9 +40,18 @@ Route::middleware(['CheckAuth'])->group(function(){
 
     Route::resource('/spare', SpareController::class);
 
-    Route::get('/customer-wise-price', [CustomerWisePriceController::class, 'index']);
+    Route::get('/customerprice/data', [CustomerWisePriceController::class, 'getCustomerprice']);
+    
+    Route::resource('/customerprice', CustomerWisePriceController::class);
 });
 
+// Route::get('/', [CustomerWisePriceController::class, 'index']);
+// Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
+
+
+Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
+// Route::get('/get-customerlist-details', [CustomerWisePriceController::class, 'getCustomerDetails'])->name('getCustomerDetails');
+Route::get('/get-customerlist-details' , [CustomerWisePriceController::class ,'get_customerlist_details'])->name('get-customerlist-details');
 
 
 // Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');

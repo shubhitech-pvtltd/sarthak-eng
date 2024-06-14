@@ -33,14 +33,13 @@ class UserController extends Controller
             'pincode' => '',
             'gender_id' => 'required|numeric',
             'role_id' => 'required|numeric',
-            'username' => 'required|unique:users',
+            'username'=>'required|unique:users',
+
         ]);
 
         $user = new User;
         $this->setUserAttributes($user, $request);
         $user->password = Hash::make($request['password']);
-        $user->created_by = session('id');
-        $user->updated_by = session('id');
         $user->save();
 
         return redirect('/user')->with('success', 'User added successfully');
@@ -64,11 +63,11 @@ class UserController extends Controller
             'city' => '',
             'pincode' => '',
             'role_id' => 'required|numeric',
+
         ]);
 
         $user = User::findOrFail($id);
         $this->setUserAttributes($user, $request);
-        $user->updated_by = session('id');
         $user->save();
 
         return redirect('/user')->with('success', 'User updated successfully');
@@ -76,8 +75,10 @@ class UserController extends Controller
 
     public function destroy($id)
     {
+
         User::destroy($id);
     }
+
 
     private function setUserAttributes(User $user, Request $request)
     {
@@ -87,8 +88,8 @@ class UserController extends Controller
         $user->mobile = $request->mobile;
         $user->user_address_1 = $request->user_address_1;
         $user->user_address_2 = $request->user_address_2;
-        $user->country = $request->country;
-        $user->state = $request->state;
+        $user->country= $request->country;
+        $user->state =  $request->state;
         $user->city = $request->city;
         $user->pincode = $request->pincode;
         $user->gender_id = $request->gender_id;
@@ -96,3 +97,6 @@ class UserController extends Controller
         $user->username = $request->username;
     }
 }
+
+
+  
