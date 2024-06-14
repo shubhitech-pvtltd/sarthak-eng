@@ -10,7 +10,7 @@ class Spare extends Model
         'machine_id',
         'part_no',
         'description',
-        'purchase_form',
+        'purchase_from',
         'buying_price',
         'selling_price',
         'drawing_upload',
@@ -19,5 +19,7 @@ class Spare extends Model
         'hsn_code',
         'currency',
         'dimension',
+        'created_by',
+        'updated_by',
     ];
 }
