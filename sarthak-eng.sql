@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2024 at 08:00 AM
+-- Generation Time: Jun 20, 2024 at 02:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -62,7 +62,7 @@ CREATE TABLE `clients` (
 
 INSERT INTO `clients` (`id`, `owner_name`, `owner_email`, `owner_phone_no`, `owner_aadhar_no`, `company_name`, `company_email`, `company_phone_no`, `company_pan_no`, `company_gst_no`, `company_cin_no`, `country`, `company_address_1`, `company_address_2`, `state`, `city`, `pincode`, `bank_branch_name`, `bank_name`, `account_no`, `ifsc_no`, `bank_address`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 (1, 'sarthak', 'sales@sarthakengineering.com', 8814956109, '000000', 'FIDELITY AGRO PRIVATE LIMITED\n', 'fidelity@gmail.com', 0, '00000000000000', '00000000000', '0000000000000', 'AL', 'Jhundpur', 'sonipat', 'mp', 'bhind', '00000000000', 'VISHWAS NAGAR-110032', 'YES BANK', '105884600000222', 'YESB0001058', NULL, 17, 17, '2024-06-13 06:27:33', '2024-06-13 06:34:02'),
-(2, 'SHUBHITECH', 'shubhitech@gmail.com', 0, '00000000', 'shubhitech', 'shubhitech1@gmail.com', 0, '000000', '00000000', '00000', 'IN', 'na', 'na', 'HR', 'gurugram', '000000', 'VISHWAS NAGAR-00000000000000', NULL, '0000000000000000', 'YESB00000000', NULL, 17, 17, '2024-06-13 06:50:24', '2024-06-13 06:51:30');
+(2, 'SHUBHITECH', 'shubhitech@gmail.com', 0, '00000000', 'SHUBHITECH', 'shubhitech1@gmail.com', 0, '000000', '00000000', '00000', 'IN', 'na', 'na', 'HR', 'gurugram', '000000', 'VISHWAS NAGAR-00000000000000', NULL, '0000000000000000', 'YESB00000000', NULL, 17, 17, '2024-06-13 06:50:24', '2024-06-13 06:51:30');
 
 -- --------------------------------------------------------
 
@@ -90,8 +90,8 @@ CREATE TABLE `customerprices` (
 --
 
 INSERT INTO `customerprices` (`id`, `machine_id`, `part_id`, `customer_id`, `price`, `discount`, `discount_percent`, `currency`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '1', '1', 0, '0000', '0000', 'INR', 17, 17, '2024-06-13 06:58:10', '2024-06-13 06:58:10'),
-(2, '2', '2', '2', 0, '000', '000', 'INR', 17, 17, '2024-06-13 06:58:36', '2024-06-13 06:58:36');
+(4, '1', '4', '2', 555, '455', '5', 'JPY', 17, 17, '2024-06-19 00:24:08', '2024-06-19 00:24:08'),
+(5, '2', '2', '1', 10, '15', '77', 'USD', 17, 17, '2024-06-19 00:24:31', '2024-06-19 00:24:31');
 
 -- --------------------------------------------------------
 
@@ -117,6 +117,72 @@ CREATE TABLE `machines` (
 INSERT INTO `machines` (`id`, `machine_name`, `description`, `model_no`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 (1, 'MISCELLANEOUS ITEMS CHARGES', 'yes', 'MDS-90-01-076', 17, 17, '2024-06-13 06:53:50', '2024-06-13 06:55:16'),
 (2, 'solenoid water assembly', 'yes', 'MDS-90-01-076', 17, 17, '2024-06-13 06:54:24', '2024-06-13 06:55:28');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `quotationlists`
+--
+
+CREATE TABLE `quotationlists` (
+  `id` int(11) NOT NULL,
+  `quotation_id` varchar(200) DEFAULT NULL,
+  `machine_id` varchar(200) DEFAULT NULL,
+  `part_id` varchar(200) DEFAULT NULL,
+  `price` varchar(200) DEFAULT NULL,
+  `quantity` varchar(200) DEFAULT NULL,
+  `discount` varchar(100) DEFAULT NULL,
+  `discount_percent` varchar(100) DEFAULT NULL,
+  `currency` varchar(100) DEFAULT NULL,
+  `created_by` int(10) DEFAULT NULL,
+  `updated_by` int(10) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `quotationlists`
+--
+
+INSERT INTO `quotationlists` (`id`, `quotation_id`, `machine_id`, `part_id`, `price`, `quantity`, `discount`, `discount_percent`, `currency`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(11, '9', '2', '2', '10', '10', '15', '77', 'USD', 33, 33, '2024-06-19 23:43:00', '2024-06-19 23:43:00'),
+(15, '11', '2', '4', '10', '5', '15', '77', 'USD', 33, 33, '2024-06-20 01:42:30', '2024-06-20 01:42:30'),
+(16, '12', '2', '2', '10', '7', '15', '77', 'USD', 33, 33, '2024-06-20 01:43:34', '2024-06-20 01:43:34'),
+(17, '13', '2', '2', '10', '76', '15', '77', 'USD', 33, 33, '2024-06-20 01:45:12', '2024-06-20 01:45:12'),
+(20, '4', '2', '2', '10', '44', '15', '77', 'USD', NULL, 33, '2024-06-20 03:17:23', '2024-06-20 03:17:23'),
+(25, '15', '2', '2', '10', '6', '15', '77', 'USD', 33, 33, '2024-06-20 05:19:21', '2024-06-20 05:19:21'),
+(26, '5', '2', '2', '10', '44', '15', '77', 'USD', 17, 33, '2024-06-20 06:23:33', '2024-06-20 06:23:33');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `quotations`
+--
+
+CREATE TABLE `quotations` (
+  `id` int(11) NOT NULL,
+  `customer_id` int(50) NOT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `total` varchar(200) DEFAULT NULL,
+  `created_by` int(10) DEFAULT NULL,
+  `updated_by` int(10) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `quotations`
+--
+
+INSERT INTO `quotations` (`id`, `customer_id`, `title`, `description`, `total`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(4, 2, 'SHUBHITECH', 'NO', NULL, NULL, 33, '2024-06-19 04:24:25', '2024-06-20 03:07:28'),
+(5, 1, 'FIDELITY', 'YES', NULL, 17, 33, '2024-06-19 05:27:54', '2024-06-20 06:23:33'),
+(9, 1, 'hhjsjhd', 'yreyuyur', NULL, 33, 33, '2024-06-19 23:43:00', '2024-06-19 23:43:00'),
+(11, 1, 'rrr', 'ttt', NULL, 33, 33, '2024-06-20 01:42:30', '2024-06-20 01:42:30'),
+(12, 1, 'ytytyt', 'yuyuyu', NULL, 33, 33, '2024-06-20 01:43:34', '2024-06-20 01:43:34'),
+(13, 1, 'ytytytytt', 'yuyuyuyu', NULL, 33, 33, '2024-06-20 01:45:12', '2024-06-20 01:45:12'),
+(15, 1, 'yyuyuyu', 'ytytt', NULL, 33, 33, '2024-06-20 05:19:21', '2024-06-20 05:19:21');
 
 -- --------------------------------------------------------
 
@@ -211,6 +277,18 @@ ALTER TABLE `machines`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `quotationlists`
+--
+ALTER TABLE `quotationlists`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `quotations`
+--
+ALTER TABLE `quotations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `spares`
 --
 ALTER TABLE `spares`
@@ -236,13 +314,25 @@ ALTER TABLE `clients`
 -- AUTO_INCREMENT for table `customerprices`
 --
 ALTER TABLE `customerprices`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `machines`
 --
 ALTER TABLE `machines`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `quotationlists`
+--
+ALTER TABLE `quotationlists`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `quotations`
+--
+ALTER TABLE `quotations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `spares`
