@@ -7,6 +7,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CustomerWisePriceController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SpareController;
+use App\Http\Controllers\QuotationController;
 
 
 Route::get('/login',[LoginController::class,'login']);
@@ -43,15 +44,24 @@ Route::middleware(['CheckAuth'])->group(function(){
     Route::get('/customerprice/data', [CustomerWisePriceController::class, 'getCustomerprice']);
     
     Route::resource('/customerprice', CustomerWisePriceController::class);
-});
 
-// Route::get('/', [CustomerWisePriceController::class, 'index']);
-// Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
+    Route::get('/quotation/data', [QuotationController::class, 'data'])->name('quotation.data');
+
+    Route::resource('/quotation', QuotationController::class);
+
+});
 
 
 Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
-// Route::get('/get-customerlist-details', [CustomerWisePriceController::class, 'getCustomerDetails'])->name('getCustomerDetails');
-Route::get('/get-customerlist-details' , [CustomerWisePriceController::class ,'get_customerlist_details'])->name('get-customerlist-details');
+Route::get('/get-customerlist-details' , [QuotationController::class ,'get_customerlist_details'])->name('get-customerlist-details');
+
+Route::get('/get-quotationlist-details' , [QuotationController::class ,'getQuotationListDetails'])->name('get-Quotationlist-details');
+
+Route::get('/getCustomerprice', [QuotationController::class, 'getCustomerprice'])->name('getCustomerprice');
+
+Route::put('/quotationedit/{quotation}', [QuotationController::class, 'update'])->name('quotation.update');
+
+
 
 
 // Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');

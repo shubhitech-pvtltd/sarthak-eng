@@ -44,6 +44,13 @@
 						</a>
 						
 					</li>
+
+					<li class="dropdown">
+						<a href="{{url('/quotation')}}" class="dropdown-toggle no-arrow">
+							<span class="fa fa-indent"></span><span class="mtext">Quotation</span>
+						</a>
+						
+					</li>
 					
 					{{-- <li class="dropdown">
 						<a href="{{url('/datewisetransaction')}}" class="dropdown-toggle no-arrow">
