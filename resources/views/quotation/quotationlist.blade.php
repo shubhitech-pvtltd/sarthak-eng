@@ -53,7 +53,7 @@
                 { data: 'company_name', name: 'company_name' },
                 { data: 'title', name: 'title' },
                 { data: 'description', name: 'description' },
-                { data: 'total', name: 'total' },
+                { data: 'grand_total', name: 'grand_total' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             "language": {

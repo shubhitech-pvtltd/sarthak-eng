@@ -16,17 +16,28 @@
             <h5 class="text-primary">Quotation</h5>
 
             <div class="form-group row">
-                <div class="col-sm-6 fw-bold">
+                <div class="col-sm-4 fw-bold">
                     <label class="col-form-label">Title<span class="text-danger">*</span></label>
-                    <input type="text" name="title" value="{{ isset($title) ? $title->title : old('title') }}"
+                    <input type="text" name="title" value="{{ old('title') }}"
                         class="form-control" placeholder="Title">
                 </div>
-                <div class="col-sm-6 fw-bold">
+                <div class="col-sm-4 fw-bold">
+                    <label class="col-form-label">Quotation Date<span class="text-danger">*</span></label>
+                    <input type="date" name="date" value="{{ old('date') }}"
+                        class="form-control">
+                </div>
+                <div class="col-sm-4 fw-bold">
+                    <label class="col-form-label">Quotation Total<span class="text-danger">*</span></label>
+                    <input type="text" name="grand_total" value="{{ old('grand_total') }}" id="grand_total"
+                        class="form-control" placeholder="Quotation Total">
+                </div>
+                <div class="col-sm-12 fw-bold">
                     <label class="col-form-label">Description<span class="text-danger">*</span></label>
                     <input type="text" name="description"
-                        value="{{ isset($description) ? $description->description : old('description') }}"
+                        value="{{ old('description') }}"
                         class="form-control" placeholder="Description">
                 </div>
+                
             </div>
 
 
@@ -72,32 +83,25 @@
     </div>
 </div>
 
-
-@php
-$machineOptions = [];
-foreach ($machines as $machine) {
-$machineOptions[$machine->id] = $machine->machine_name . ' [' . $machine->model_no . ']';
-}
-@endphp
 <script>
 $(document).ready(function() {
 
 
-    var customerWiseForm = `
+    let customerWiseForm = `
         <div class="form-group row border p-3 mb-3 bg-light rounded customer-wise-form">
             <div class="row">
                 <div class="col-sm-6">
                     <label class="col-form-label fw-bold">Machine Name<span class="text-danger">*</span></label>
                     <select class="form-control machine_id" name="machine_id[]">
                         <option value="">Select Machine</option>
-                        @foreach ($machineOptions as $id => $name)
-                            <option value="{{ $id }}">{{ $name }}</option>
+                        @foreach ($machines as $machine)
+                            <option value="{{ $machine->id }}">{{$machine->machine_name}} [ {{  $machine->model_no}} ]</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-sm-3">
                     <label class="col-form-label fw-bold">Part No.<span class="text-danger">*</span></label>
-                    <select class="form-control part_id" name="part_id">
+                    <select class="form-control part_id" name="part_id[]">
                         <option value="">Select Part</option>
                     </select>
                 </div>
@@ -128,14 +132,14 @@ $(document).ready(function() {
 
                  <div class="col-sm-3">
                     <label class="col-form-label fw-bold">Total<span class="text-danger">*</span></label>
-                    <input type="text" name="Total[]" class="form-control total" placeholder="Total" readonly>
+                    <input type="text" name="total[]" class="form-control total" placeholder="Total" readonly oninput="calculateGrandTotal()">
                 </div>
 
 
                 <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Currency<span class="text-danger">*</span></label>
                     <select class="form-control currency" name="currency[]">
-                        <option disabled selected>Select Currency</option>
+                        <option selected value="">Select Currency</option>
                         @foreach (getCurrency() as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
@@ -252,32 +256,43 @@ $(document).ready(function() {
             });
         }
     });
+});
+
+    function calculateGrandTotal(){
+        let grandTotal = 0;
+
+        $('input[name="total[]"]').each(function(){
+            let totalVal = parseFloat($(this).val()) || 0;
+            grandTotal += totalVal;
+        });
+        $('#grand_total').val(grandTotal);
+    }
 
     function calculateTotal(row) {
-        var quantity = parseFloat(row.find('input[name="quantity[]"]').val()) || 0;
-        var price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
-        var discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
+        let quantity = parseFloat(row.find('input[name="quantity[]"]').val()) || 0;
+        let price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        let discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
 
-        var total = (price * quantity) - discountPrice;
-        row.find('input[name="Total[]"]').val(total.toFixed(2));
+        let total = (price -  discountPrice) * quantity ;
+        row.find('input[name="total[]"]').val(total.toFixed(2)).trigger('input');
     }
 
     function updateDiscountFromPercent(row) {
-        var price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
-        var discountPercent = parseFloat(row.find('input[name="discount_percent[]"]').val()) || 0;
+        let price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        let discountPercent = parseFloat(row.find('input[name="discount_percent[]"]').val()) || 0;
 
-        var discountPrice = (price * discountPercent) / 100;
+        let discountPrice = (price * discountPercent) / 100;
         row.find('input[name="discount[]"]').val(discountPrice.toFixed(2));
 
         calculateTotal(row);
     }
 
     function updatePercentFromDiscount(row) {
-        var price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
-        var discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
+        let price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        let discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
 
         if (price !== 0) {
-            var discountPercent = (discountPrice / price) * 100;
+            let discountPercent = (discountPrice / price) * 100;
             row.find('input[name="discount_percent[]"]').val(discountPercent.toFixed(2));
         } else {
             row.find('input[name="discount_percent[]"]').val('');
@@ -286,18 +301,18 @@ $(document).ready(function() {
         calculateTotal(row);
     }
 
-    $(document).on('input', 'input[name="quantity[]"], input[name="price[]"], input[name="discount[]"]', function() {
-        var row = $(this).closest('.customer-wise-form');
-        calculateTotal(row);
+    $(document).on('input', 'input[name="quantity[]"], input[name="price[]"]', function() {
+        let row = $(this).closest('.customer-wise-form');
+        updateDiscountFromPercent(row);
     });
 
     $(document).on('input', 'input[name="discount_percent[]"]', function() {
-        var row = $(this).closest('.customer-wise-form');
+        let row = $(this).closest('.customer-wise-form');
         updateDiscountFromPercent(row);
     });
 
     $(document).on('input', 'input[name="discount[]"]', function() {
-        var row = $(this).closest('.customer-wise-form');
+        let row = $(this).closest('.customer-wise-form');
         updatePercentFromDiscount(row);
     });
 
@@ -306,7 +321,6 @@ $(document).ready(function() {
     });
 
 
-});
 </script>
 
 

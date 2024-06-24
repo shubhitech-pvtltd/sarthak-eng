@@ -59,7 +59,6 @@ Route::get('/get-quotationlist-details' , [QuotationController::class ,'getQuota
 
 Route::get('/getCustomerprice', [QuotationController::class, 'getCustomerprice'])->name('getCustomerprice');
 
-Route::put('/quotationedit/{quotation}', [QuotationController::class, 'update'])->name('quotation.update');
 
 
 

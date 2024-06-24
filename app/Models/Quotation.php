@@ -12,7 +12,7 @@ class Quotation extends Model
         'customer_id', 
         'title',
         'description',
-        'total', 
+        'grand_total', 
         
     ];
 
