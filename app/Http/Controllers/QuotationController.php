@@ -20,34 +20,54 @@ class QuotationController extends Controller
         return view('quotation.quotationlist');
     }
 
-    public function data()
-{
-    $quotations = Quotation::select([
-        'quotations.id',
-        'clients.company_name as company_name',
-        'quotations.title',
-        'quotations.description',
-        'quotations.total',
-    ])->leftJoin('clients', 'quotations.customer_id', '=', 'clients.id');
+    public function data(Request $request)
+    {
+        $columns = [
+            'quotations.id',
+            'clients.company_name',
+            'quotations.title',
+            'quotations.description',
+            'quotations.total',
+        ];
+    
+        $query = Quotation::select($columns)
+            ->leftJoin('clients', 'quotations.customer_id', '=', 'clients.id');
+    
+        if ($request->has('search') && !empty($request->input('search.value'))) {
+            $searchValue = strtolower($request->input('search.value'));
+            $query->where(function ($query) use ($searchValue) {
+                $query->whereRaw('LOWER(quotations.title) like ?', ["%{$searchValue}%"])
+                    ->orWhereRaw('LOWER(quotations.description) like ?', ["%{$searchValue}%"])
+                    ->orWhereRaw('LOWER(quotations.total) like ?', ["%{$searchValue}%"])
+                    ->orWhereRaw('LOWER(clients.company_name) like ?', ["%{$searchValue}%"]);
+            });
+        }
+    
+        $recordsTotal = Quotation::count();
+    
+        return DataTables::of($query)
+            ->addColumn('action', function ($quotation) {
+                return '<div class="dropdown">
+                            <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="'.url('/quotation/'.$quotation->id.'/edit').'"><i class="fa fa-pencil"></i> Edit</a>
+                                <a class="dropdown-item deleteBtn" data-url="'.url('/quotation/'.$quotation->id).'"><i class="fa fa-trash"></i> Delete</a>
 
-    return DataTables::of($quotations)
-        ->addColumn('action', function ($quotation) {
-            return 
-           ' <div class="dropdown">
-                        <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            <i class="fa fa-ellipsis-h"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="'.url('/quotation/'.$quotation->id.'/edit').'"><i class="fa fa-pencil"></i> Edit</a>
-                            <a class="dropdown-item deleteBtn" data-url="'.url('/quotation/'.$quotation->id).'"><i class="fa fa-trash"></i> Delete</a>
-                        </div>
-                    </div>';
-            
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
+                                <a class="dropdown-item" href=""><i class="fa fa-eye"></i> View PDF</a>
+                                <a class="dropdown-item" href=""><i class="fa fa-download"></i> Download PDF</a>
 
+                            </div>
+                        </div>';
+            })
+            ->rawColumns(['action'])
+            ->setTotalRecords($recordsTotal)
+            ->skipPaging()
+            ->make(true);
+    }
+    
+    
     public function get_customerlist_details(Request $request)
     {
         $client = Client::select('owner_name','company_gst_no')->find($request->customer_id);
@@ -59,25 +79,25 @@ class QuotationController extends Controller
 
     public function getCustomerprice(Request $request)
 {
-    // Find customer price
+    
     $customerPrice = Customerprice::where('customer_id', $request->customer_id)
         ->where('part_id', $request->part_id)
         ->first();
 
-    // Get the buying price from Spare
+    
     $buyingprice = Spare::select('buying_price')->find($request->part_id);
 
-    // If customer price not found, get the selling price from Spare
+   
     if (!$customerPrice) {
         $customerPrice = Spare::select('selling_price as price')->find($request->part_id);
     }
 
-    // If no customer price and no spare found
+   
     if (!$customerPrice && !$buyingprice) {
         return response()->json(['error' => 'No data found for the given customer and part ID'], 404);
     }
 
-    // Merge the customer price and buying price
+   
     $response = [
         'price' => $customerPrice ? $customerPrice->price : null,
         'discount' => $customerPrice ? $customerPrice->discount : null,
@@ -212,34 +232,6 @@ class QuotationController extends Controller
             return redirect()->back()->with('error', 'Error while updating the record');
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public function destroy($id)
 {

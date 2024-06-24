@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('quotations', function (Blueprint $table) {
             $table->id();
+            $table->string('title'); // Add a title column
+            $table->text('description'); // Add a description column
+            $table->unsignedBigInteger('customer_id'); // Add a customer_id column (assuming it relates to clients/customers)
+            // Add more columns as per your application's requirements
+            $table->foreign('customer_id')->references('id')->on('clients'); // Assuming 'clients' is your clients/customers table
             $table->timestamps();
         });
     }
@@ -25,3 +30,4 @@ return new class extends Migration
         Schema::dropIfExists('quotations');
     }
 };
+

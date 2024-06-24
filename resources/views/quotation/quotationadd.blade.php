@@ -95,16 +95,14 @@ $(document).ready(function() {
                         @endforeach
                     </select>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                     <label class="col-form-label fw-bold">Part No.<span class="text-danger">*</span></label>
                     <select class="form-control part_id" name="part_id">
                         <option value="">Select Part</option>
                     </select>
                 </div>
-               
-
-
-                <div class="col-sm-4 fw-bold">
+            
+                <div class="col-sm-3 fw-bold">
                     <label class="col-form-label">Buying Price<span class="text-danger">*</span></label>
                     <input type="text" name="buying_price[]" value="" class="form-control buying_price"
                         placeholder="Buying Price" disabled>
@@ -120,14 +118,21 @@ $(document).ready(function() {
                     <input type="text" name="quantity[]" class="form-control" placeholder="Quantity">
                 </div>
                 <div class="col-sm-4">
-                    <label class="col-form-label fw-bold">Discount<span class="text-danger">*</span></label>
-                    <input type="text" name="discount[]" class="form-control discount" placeholder="Discount">
+                    <label class="col-form-label fw-bold">Discount Price<span class="text-danger">*</span></label>
+                    <input type="text" name="discount[]" class="form-control discount" placeholder="Discount Price">
                 </div>
                 <div class="col-sm-3">
                     <label class="col-form-label fw-bold">Discount %<span class="text-danger">*</span></label>
                     <input type="text" name="discount_percent[]" class="form-control discount_percent" placeholder="Discount Percent">
                 </div>
-                <div class="col-sm-3">
+
+                 <div class="col-sm-3">
+                    <label class="col-form-label fw-bold">Total<span class="text-danger">*</span></label>
+                    <input type="text" name="Total[]" class="form-control total" placeholder="Total" readonly>
+                </div>
+
+
+                <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Currency<span class="text-danger">*</span></label>
                     <select class="form-control currency" name="currency[]">
                         <option disabled selected>Select Currency</option>
@@ -246,6 +251,58 @@ $(document).ready(function() {
                 }
             });
         }
+    });
+
+    function calculateTotal(row) {
+        var quantity = parseFloat(row.find('input[name="quantity[]"]').val()) || 0;
+        var price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        var discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
+
+        var total = (price * quantity) - discountPrice;
+        row.find('input[name="Total[]"]').val(total.toFixed(2));
+    }
+
+    function updateDiscountFromPercent(row) {
+        var price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        var discountPercent = parseFloat(row.find('input[name="discount_percent[]"]').val()) || 0;
+
+        var discountPrice = (price * discountPercent) / 100;
+        row.find('input[name="discount[]"]').val(discountPrice.toFixed(2));
+
+        calculateTotal(row);
+    }
+
+    function updatePercentFromDiscount(row) {
+        var price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        var discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
+
+        if (price !== 0) {
+            var discountPercent = (discountPrice / price) * 100;
+            row.find('input[name="discount_percent[]"]').val(discountPercent.toFixed(2));
+        } else {
+            row.find('input[name="discount_percent[]"]').val('');
+        }
+
+        calculateTotal(row);
+    }
+
+    $(document).on('input', 'input[name="quantity[]"], input[name="price[]"], input[name="discount[]"]', function() {
+        var row = $(this).closest('.customer-wise-form');
+        calculateTotal(row);
+    });
+
+    $(document).on('input', 'input[name="discount_percent[]"]', function() {
+        var row = $(this).closest('.customer-wise-form');
+        updateDiscountFromPercent(row);
+    });
+
+    $(document).on('input', 'input[name="discount[]"]', function() {
+        var row = $(this).closest('.customer-wise-form');
+        updatePercentFromDiscount(row);
+    });
+
+    $('.customer-wise-form').each(function() {
+        calculateTotal($(this));
     });
 
 
