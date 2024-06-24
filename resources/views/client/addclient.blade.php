@@ -125,8 +125,8 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-sm-6 fw-bold">
-                        <label class="col-form-label">Country Selection<span class="text-danger">*</span></label>
+                    <div class="col-sm-6">
+                        <label class="col-form-label fw-bold">Country Selection<span class="text-danger">*</span></label>
 
                         <select class="js-example-basic-single1 form-control" name="country" id="country"
                             value="{{ isset($client) ? $client->country : '' }}">

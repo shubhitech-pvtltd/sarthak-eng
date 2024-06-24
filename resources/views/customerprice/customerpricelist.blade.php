@@ -68,7 +68,7 @@
                 </div>
 
                 <div class="col-sm-2 fw-bold">
-                    <label class="col-form-label">Currency Selection<span class="text-danger">*</span></label>
+                    <label class="col-form-label">Currency<span class="text-danger">*</span></label>
                     <select class="form-control currency" name="currency[]">
                         <option disabled selected>Select Currency</option>
                         @foreach(getCurrency() as $key => $value)

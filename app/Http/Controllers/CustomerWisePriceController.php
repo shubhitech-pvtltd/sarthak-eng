@@ -56,15 +56,6 @@ return view('customerprice.customerpricelist', compact('customerprices', 'machin
     $request->validate([
        'machine_id' => 'required',
          'part_id' => 'required',
-        // 'customer_id' => 'required|array',
-        // 'username.*' => 'required|integer',
-        // 'price' => 'required|array',
-        // 'price.*' => 'required|numeric',
-        // 'discount' => 'nullable|array',
-        // 'discount.*' => 'nullable|numeric',
-        // 'discount_percent' => 'nullable|array',
-        // 'discount_percent.*' => 'nullable|numeric',
-        // 'currency' => 'required|string',
     ]);
     
 

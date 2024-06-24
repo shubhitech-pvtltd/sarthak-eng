@@ -31,6 +31,7 @@
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Machine Name<span class="text-danger">*</span></label>
+                         <!-- <select class="selectpicker form-control" style="border:1px solid #ced4da !important;" data-live-search="true" name="machine_id"> -->
                         <select class="js-example-basic-single1  form-control" name="machine_id">
                             <option value="">Select Machine</option>
                             @foreach($machines as $machine)
