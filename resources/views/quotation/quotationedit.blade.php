@@ -12,7 +12,7 @@
     </div>
 
     <div class="pd-20 bg-white border-radius-4 box-shadow">
-        <form action="{{ route('quotation.update', $quotation->id) }}" method="post" id="editQuotationForm">
+        <form action="{{ url('quotation/'.$quotation->id) }}" method="post" id="editQuotationForm">
             @csrf
             @method('PUT')
             <h5 class="text-primary">Edit Quotation</h5> 
@@ -21,10 +21,20 @@
             <input type="hidden" name="quotation_id" value="{{ $quotation->id }}">
 
             <div class="form-group row">
-                <div class="col-sm-6 fw-bold">
+                <div class="col-sm-4 fw-bold">
                     <label class="col-form-label">Title<span class="text-danger">*</span></label>
                     <input type="text" name="title" value="{{ old('title', $quotation->title) }}" class="form-control"
                         placeholder="Title">
+                </div>
+                <div class="col-sm-4 fw-bold">
+                    <label class="col-form-label">Quotation Date<span class="text-danger">*</span></label>
+                    <input type="date" name="date" value="{{ old('date', $quotation->date) }}"
+                        class="form-control">
+                </div>
+                <div class="col-sm-4 fw-bold">
+                    <label class="col-form-label">Quotation Total<span class="text-danger">*</span></label>
+                    <input type="text" name="grand_total" value="{{ old('grand_total', $quotation->grand_total) }}"
+                        class="form-control" placeholder="Quotation Total" id="grand_total">
                 </div>
                 <div class="col-sm-6 fw-bold">
                     <label class="col-form-label">Description<span class="text-danger">*</span></label>
@@ -71,7 +81,7 @@
                         <input type="hidden" name="quotationlist_id[]" value="{{ $list->id }}">
                         <div class="col-sm-6">
                             <label class="col-form-label fw-bold">Machine Name<span class="text-danger">*</span></label>
-                            <select class="form-control machine_id" name="machine_id[]">
+                            <select class="form-control machine_id" name="machine_id[]" onchange="getPartDetails(this)" data-part_id="{{$list->part_id}}">
                                 <option value="">Select Machine</option>
                                 @foreach ($machines as $machine)
                                 <option value="{{ $machine->id }}"
@@ -83,13 +93,8 @@
                         </div>
                         <div class="col-sm-3">
                             <label class="col-form-label fw-bold">Part No.<span class="text-danger">*</span></label>
-                            <select class="form-control part_id" name="part_id[]">
-                                <option value="">Select Part</option>
-                                @foreach ($parts as $part)
-                                <option value="{{ $part->id }}" {{ $part->id == $list->part_id ? 'selected' : '' }}>
-                                    {{$part->description }} [{{ $part->part_no }}]
-                                </option>
-                                @endforeach
+                            <select class="form-control part_old_id" name="part_id[]">
+                               
                             </select>
                         </div>
 
@@ -124,14 +129,14 @@
 
                         <div class="col-sm-3">
                            <label class="col-form-label fw-bold">Total<span class="text-danger">*</span></label>
-                           <input type="text" name="Total[]" class="form-control total" placeholder="Total" readonly>
+                           <input type="text" name="total[]" class="form-control total" placeholder="Total" readonly oninput="calculateGrandTotal()">
                         </div>
 
                         
                         <div class="col-sm-4">
                             <label class="col-form-label fw-bold">Currency<span class="text-danger">*</span></label>
                             <select class="form-control currency" name="currency[]">
-                                <option disabled>Select Currency</option>
+                                <option selected value="">Select Currency</option>
                                 @foreach (getCurrency() as $key => $value)
                                 <option value="{{ $key }}" {{ $key == $list->currency ? 'selected' : '' }}>
                                     {{ $value }}
@@ -157,32 +162,32 @@
     </div>
 </div>
 
-@php
-$machineOptions = [];
-foreach ($machines as $machine) {
-$machineOptions[$machine->id] = $machine->machine_name . ' [' . $machine->model_no . ']';
-}
-@endphp
 <script>
 $(document).ready(function() {
-
+    
     getCustomerDetails();
+
+    $('select.machine_id').each(function() {
+        getPartDetails(this);
+    });
+
+});
 
     var customerWiseForm = `
         <div class="form-group row border p-3 mb-3 bg-light rounded customer-wise-form">
             <div class="row">
                 <div class="col-sm-6">
                     <label class="col-form-label fw-bold">Machine Name<span class="text-danger">*</span></label>
-                    <select class="form-control machine_id" name="machine_id[]">
+                    <select class="form-control machine_id" name="machine_id[]" onchange="getPartDetails(this)">
                         <option value="">Select Machine</option>
-                        @foreach ($machineOptions as $id => $name)
-                            <option value="{{ $id }}">{{ $name }}</option>
+                        @foreach ($machines as $machine)
+                            <option value="{{ $machine->id }}">{{$machine->machine_name}} [ {{  $machine->model_no}} ]</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-sm-3">
                     <label class="col-form-label fw-bold">Part No.<span class="text-danger">*</span></label>
-                    <select class="form-control part_id" name="part_id">
+                    <select class="form-control part_id" name="part_id[]">
                         <option value="">Select Part</option>
                     </select>
                 </div>
@@ -193,7 +198,7 @@ $(document).ready(function() {
 
                 <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Selling Price<span class="text-danger">*</span></label>
-                    <input type="text" name="price[]" class="form-control price" placeholder="Selling Price" disabled>
+                    <input type="text" name="price[]" class="form-control price" placeholder="Selling Price" readonly>
                 </div>
                 <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Quantity<span class="text-danger">*</span></label>
@@ -210,14 +215,13 @@ $(document).ready(function() {
 
                 <div class="col-sm-3">
                    <label class="col-form-label fw-bold">Total<span class="text-danger">*</span></label>
-                   <input type="text" name="Total[]" class="form-control total" placeholder="Total" readonly>
+                   <input type="text" name="total[]" class="form-control total" placeholder="Total" oninput="calculateGrandTotal()" readonly>
                 </div>
-
 
                 <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Currency<span class="text-danger">*</span></label>
                     <select class="form-control currency" name="currency[]">
-                        <option disabled selected>Select Currency</option>
+                        <option selected value="">Select Currency</option>
                         @foreach (getCurrency() as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>
                         @endforeach
@@ -242,11 +246,18 @@ $(document).ready(function() {
         $(this).closest('.customer-wise-form').remove();
     });
 
-    $(document).on('change', '.machine_id', function() {
-        var selectedMachineId = $(this).val();
-        var partSelect = $(this).closest('.row').find('.part_id');
+    function getPartDetails(element){
+
+        let selectedMachineId = $(element).val();
+        let partSelect = $(element).data('part_id') 
+                        ? $(element).closest('.row').find('.part_old_id') 
+                        : $(element).closest('.row').find('.part_id');
+
         partSelect.empty();
         partSelect.append('<option value="">Select Part</option>');
+
+        let quotationPartId = $(element).data('part_id');
+
         if (selectedMachineId) {
             $.ajax({
                 url: '{{ route("getMachineDetails") }}',
@@ -259,11 +270,11 @@ $(document).ready(function() {
                     if (response.length) {
                         response.forEach(function(part) {
                             partSelect.append(
-                                '<option value="' + part.id + '">' + part
-                                .description + ' [' + part.part_no +
-                                ']</option>'
+                                `<option value="${part.id}" ${part.id == quotationPartId ? "selected" : ""}  >${part.description}[${part.part_no}]</option>`
                             );
                         });
+                        partSelect.trigger('change');
+
                     } else {
                         console.warn("No parts found for the selected machine.");
                     }
@@ -273,7 +284,7 @@ $(document).ready(function() {
                 }
             });
         }
-    });
+    };
 
     $('#customer_id').on('change', function() {
         getCustomerDetails();
@@ -328,8 +339,6 @@ $(document).ready(function() {
                     form.find('.discount').val(response.discount);
                     form.find('.discount_percent').val(response.discount_percent);
                     form.find('.currency').val(response.currency);
-
-
                 },
                 error: function(xhr) {
                     console.error('Error:', xhr);
@@ -338,8 +347,69 @@ $(document).ready(function() {
         }
     });
 
+    function calculateGrandTotal(){
+        let grandTotal = 0;
 
-});
+        $('input[name="total[]"]').each(function(){
+            let totalVal = parseFloat($(this).val()) || 0;
+            grandTotal += totalVal;
+        });
+        $('#grand_total').val(grandTotal);
+    }
+
+    function calculateTotal(row) {
+        let quantity = parseFloat(row.find('input[name="quantity[]"]').val()) || 0;
+        let price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        let discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
+
+        let total = (price -  discountPrice) * quantity ;
+        row.find('input[name="total[]"]').val(total.toFixed(2)).trigger('input');
+    }
+
+    function updateDiscountFromPercent(row) {
+        let price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        let discountPercent = parseFloat(row.find('input[name="discount_percent[]"]').val()) || 0;
+
+        let discountPrice = (price * discountPercent) / 100;
+        row.find('input[name="discount[]"]').val(discountPrice.toFixed(2));
+
+        calculateTotal(row);
+    }
+
+    function updatePercentFromDiscount(row) {
+        let price = parseFloat(row.find('input[name="price[]"]').val()) || 0;
+        let discountPrice = parseFloat(row.find('input[name="discount[]"]').val()) || 0;
+
+        if (price !== 0) {
+            let discountPercent = (discountPrice / price) * 100;
+            row.find('input[name="discount_percent[]"]').val(discountPercent.toFixed(2));
+        } else {
+            row.find('input[name="discount_percent[]"]').val('');
+        }
+
+        calculateTotal(row);
+    }
+
+    $(document).on('input', 'input[name="quantity[]"], input[name="price[]"]', function() {
+        let row = $(this).closest('.customer-wise-form');
+        updateDiscountFromPercent(row);
+    });
+
+    $(document).on('input', 'input[name="discount_percent[]"]', function() {
+        let row = $(this).closest('.customer-wise-form');
+        updateDiscountFromPercent(row);
+    });
+
+    $(document).on('input', 'input[name="discount[]"]', function() {
+        let row = $(this).closest('.customer-wise-form');
+        updatePercentFromDiscount(row);
+    });
+
+    $('.customer-wise-form').each(function() {
+        calculateTotal($(this));
+    });
+
+
 </script>
 
 
