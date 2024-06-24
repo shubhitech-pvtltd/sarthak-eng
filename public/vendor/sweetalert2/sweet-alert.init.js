@@ -5,7 +5,7 @@
     };
 
     //examples
-    SweetAlert.prototype.init = function () {
+    SweetAlert.prototype.init = function () {   
 
         //Warning Message
         $(document).on("click",".deleteBtn", function(){

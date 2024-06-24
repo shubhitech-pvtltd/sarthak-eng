@@ -10,8 +10,9 @@ use App\Models\Spare;
 use App\Models\Client;
 use App\Models\Quotation;
 use App\Models\Quotationlist;
-use DataTables;
-use Session; 
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class QuotationController extends Controller
 {
@@ -27,7 +28,7 @@ class QuotationController extends Controller
             'clients.company_name',
             'quotations.title',
             'quotations.description',
-            'quotations.total',
+            'quotations.grand_total',
         ];
     
         $query = Quotation::select($columns)
@@ -38,7 +39,7 @@ class QuotationController extends Controller
             $query->where(function ($query) use ($searchValue) {
                 $query->whereRaw('LOWER(quotations.title) like ?', ["%{$searchValue}%"])
                     ->orWhereRaw('LOWER(quotations.description) like ?', ["%{$searchValue}%"])
-                    ->orWhereRaw('LOWER(quotations.total) like ?', ["%{$searchValue}%"])
+                    ->orWhereRaw('LOWER(quotations.grand_total) like ?', ["%{$searchValue}%"])
                     ->orWhereRaw('LOWER(clients.company_name) like ?', ["%{$searchValue}%"]);
             });
         }
@@ -124,6 +125,7 @@ class QuotationController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'customer_id' => 'required|exists:clients,id',
+            'date' => 'required',
             'machine_id.*' => 'required|exists:machines,id',
             'part_id.*' => 'required|exists:spares,id',
             'price.*' => 'required|numeric',
@@ -137,13 +139,15 @@ class QuotationController extends Controller
             $quotation = new Quotation();
             $quotation->title = $request->title;
             $quotation->description = $request->description;
+            $quotation->date = $request->date;
+            $quotation->grand_total = $request->grand_total;
             $quotation->customer_id = $request->customer_id;
             $quotation->created_by = Session::get('id');
             $quotation->updated_by = Session::get('id');
             $quotation->save();
     
             foreach ($request->machine_id as $index => $machineId) {
-                Quotationlist::create([
+                $quotationitems =Quotationlist::create([
                     'quotation_id' => $quotation->id,
                     'machine_id' => $machineId,
                     'part_id' => $request->part_id[$index],
@@ -151,6 +155,7 @@ class QuotationController extends Controller
                     'quantity' => $request->quantity[$index],
                     'discount' => $request->discount[$index],
                     'discount_percent' => $request->discount_percent[$index],
+                    'total' => $request->total[$index],
                     'currency' => $request->currency[$index],                 
                     'created_by' => Session::get('id'),
                     'updated_by' => Session::get('id'),
@@ -171,7 +176,6 @@ class QuotationController extends Controller
         $customers = Client::all();
         $parts = Spare::all();
         
-
         return view('quotation.show', compact('quotation', 'machines', 'customers', 'parts'));
     }
 
@@ -180,22 +184,21 @@ class QuotationController extends Controller
         $quotation = Quotation::with('quotationlists')->findOrFail($id);
         $customers = Client::all();
         $machines = Machine::all();
-        $parts = Spare::all();
-        return view('quotation.quotationedit', compact('quotation', 'customers', 'machines', 'parts'));
+        return view('quotation.quotationedit', compact('quotation', 'customers', 'machines'));
     }
 
     public function update(Request $request, $id)
     {
+        // dd($request);
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
+            'date' => 'required',
             'customer_id' => 'required|exists:clients,id',
             'machine_id.*' => 'required|exists:machines,id',
             'part_id.*' => 'required|exists:spares,id',
             'price.*' => 'required|numeric',
             'quantity.*' => 'required|integer',
-            'discount.*' => 'required|numeric',
-            'discount_percent.*' => 'required|numeric',
             'currency.*' => 'required|string|max:255',
         ]);
 
@@ -203,16 +206,16 @@ class QuotationController extends Controller
             $quotation = Quotation::findOrFail($id);
             $quotation->title = $request->title;
             $quotation->description = $request->description;
+            $quotation->date = $request->date;
+            $quotation->grand_total = $request->grand_total;
             $quotation->customer_id = $request->customer_id;
             $quotation->updated_by = Session::get('id');
             $quotation->save();
-
             
             $quotation->quotationlists()->delete();
-
-          
+         
             foreach ($request->machine_id as $index => $machineId) {
-                Quotationlist::create([
+                 Quotationlist::create([
                     'quotation_id' => $quotation->id,
                     'machine_id' => $machineId,
                     'part_id' => $request->part_id[$index],
@@ -220,13 +223,14 @@ class QuotationController extends Controller
                     'quantity' => $request->quantity[$index],
                     'discount' => $request->discount[$index],
                     'discount_percent' => $request->discount_percent[$index],
+                    'total' => $request->total[$index],
                     'currency' => $request->currency[$index],
                     'created_by' => $quotation->created_by,
                     'updated_by' => Session::get('id'),
                 ]);
             }
 
-            return redirect()->route('quotation.index')->with('success', 'Quotation updated successfully!');
+            return redirect()->back()->with('success', 'Quotation updated successfully!');
         } catch (\Exception $e) {
             Log::error('Error while updating the record: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error while updating the record');
@@ -243,7 +247,7 @@ class QuotationController extends Controller
 
        
     } catch (\Exception $e) {
-        \Log::error('Error while deleting the record: ' . $e->getMessage());
+        Log::error('Error while deleting the record: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Error while deleting the record');
     }
 }
