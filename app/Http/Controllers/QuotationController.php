@@ -56,7 +56,7 @@ class QuotationController extends Controller
                                 <a class="dropdown-item" href="'.url('/quotation/'.$quotation->id.'/edit').'"><i class="fa fa-pencil"></i> Edit</a>
                                 <a class="dropdown-item deleteBtn" data-url="'.url('/quotation/'.$quotation->id).'"><i class="fa fa-trash"></i> Delete</a>
 
-                                <a class="dropdown-item" href=""><i class="fa fa-eye"></i> View PDF</a>
+                                <a class="dropdown-item" href="'.url('/quotation/'.$quotation->id.'/view').'"><i class="fa fa-eye"></i> View PDF</a>
                                 <a class="dropdown-item" href=""><i class="fa fa-download"></i> Download PDF</a>
 
                             </div>
@@ -250,6 +250,12 @@ class QuotationController extends Controller
         Log::error('Error while deleting the record: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Error while deleting the record');
     }
+}
+
+
+public function viewQuotation()
+{
+    return view('quotation.quotationview');
 }
 
 }

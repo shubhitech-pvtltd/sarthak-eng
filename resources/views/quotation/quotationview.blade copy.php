@@ -2,14 +2,16 @@
 <html>
 <head>
     <title>Quotation Letter</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             padding: 0;
         }
-        .container {
+
+        .container{
             margin: 0 80px 0 0;
+
         }
+        
         .header {
             text-align: center;
             padding: 20px 0;
@@ -22,6 +24,10 @@
         .header p {
             margin: 5px 0;
         }
+        
+        .content p {
+            line-height: 1;
+        }
         .footer {
             text-align: center;
             padding: 10px 0;
@@ -31,6 +37,21 @@
         }
         .page {
             page-break-after: always;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
         }
         .download-btn {
             text-align: center;
@@ -48,33 +69,23 @@
         .download-btn button:hover {
             background-color: #004080;
         }
-        @media print {
-            .no-print {
-                display: none;
-            }
-        }
-
-    
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <div id="page1" class="page container">
-    <div class="header" style="display: flex; align-items: center; padding: 10px;">
-        <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="max-width: 150px; margin-right: 20px;">
-        <div>
+        <div class="header">
             <h2>Sarthak Engineering</h2>
             <p>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</p>
         </div>
-    </div>
         <div class="content">
-            <p><strong>Quotation Ref No.</strong> SE/091/2023-24</p>
-            <p style="position: absolute;  right: 10px;"><strong>Date:</strong> 14/08/2023</p>
-            <p><strong>To:</strong> FIDELITY AGRO PRIVATE LIMITED<br>
-               <strong>Address:</strong> GBA 4 & GBA 5, MALANPUR INDUSTRIAL AREA, BHIND, MP</p>
-            <p><strong>From:</strong> SARTHAK ENGINEERING<br>
+            <p>Quotation Ref No. SE/091/2023-24</p>
+            <p>To: FIDELITY AGRO PRIVATE LIMITED<br>
+               Address: GBA 4 & GBA 5, MALANPUR INDUSTRIAL AREA, BHIND, MP</p>
+            <p>From: SARTHAK ENGINEERING<br>
                Khesra no. 69-19/3, Jhundpur, Sonepat, HR-131021</p>
-            <p><strong>Sub:</strong> Offer for MSD-90-01-076 Spares.</p>
+            <p>Date: 14/08/2023</p>
+            <p>Sub: Offer for MSD-90-01-076 Spares.</p>
             <p>Dear Sir,</p>
             <p>I would like to use this opportunity to introduce you to Sarthak Engineering, seller of Reconditioned Gea Westfalia Separator. We own an office and factory at Kundli Industrial area, Sonipat. Sarthak Engineering has been started keeping in view customer’s demand for used/reconditioned machinery. Since the beginning we are involved in selling and servicing of reconditioned separators as well as new separators for Dairy, Edible oil, Pharma and other various industries. We stock a wide range of machineries of Gea Westfalia and Alfa laval make sourced worldwide. We provide all spare parts required for periodic servicing of machine as well as repairing.</p>
             <p>Thank you for your valuable enquiry. It is our pleasure for offering you the following machines and enclosing herewith our detailed quotations for the same along with our terms and conditions of sale.</p>
@@ -90,84 +101,107 @@
     </div>
 
     <div id="page2" class="page container">
-    <div class="header" style="display: flex; align-items: center; padding: 10px;">
-        <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="max-width: 150px; margin-right: 20px;">
-        <div>
+        <div class="header">
             <h2>Sarthak Engineering</h2>
             <p>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</p>
         </div>
-    </div>
         <div class="content">
-            <p><strong>SUBJECT:</strong> Offer for MSD-90-01-076 Spares.</p>
-            <table class="table table-bordered">
-                <thead class="thead-light">
-                    <tr>
-                        <th>SN</th>
-                        <th>Part Number</th>
-                        <th>Part Description</th>
-                        <th>Qty.</th>
-                        <th>UNITS</th>
-                        <th>UNIT PRICE IN RS.</th>
-                        <th>TOTAL PRICE IN RS.</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>8134-2100-270</td>
-                        <td>Solenoid Water Assembly</td>
-                        <td>1</td>
-                        <td>SET</td>
-                        <td>370000</td>
-                        <td>370000</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Separating Disk/Upper Disk</td>
-                        <td>1</td>
-                        <td>SET</td>
-                        <td>85000</td>
-                        <td>85000</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Booster Pump with pressure tank, NRV, Pressure Switch etc</td>
-                        <td>1</td>
-                        <td>SET</td>
-                        <td>350000</td>
-                        <td>350000</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>PLC Panel along with Danfoss Frequency Drive and touch type Colored HMI (SS 304 BODY)</td>
-                        <td>1</td>
-                        <td>SET</td>
-                        <td>380000</td>
-                        <td>380000</td>
-                    </tr>
-                    
-               
-                    <tr>
-                        <td>9</td>
-                        <td>Commissioning Charges (To & fro conveyance charges)<br>Visit Description<br>Foundation grounting<br>Machine Erection<br>Water Trial & Product Trial</td>
-                        <td>1</td>
-                        <td>SET</td>
-                        <td>100000</td>
-                        <td>100000</td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>Labor Charges</td>
-                        <td>1</td>
-                        <td>SET</td>
-                        <td>70000</td>
-                        <td>70000</td>
-                    </tr>
-                    <tr>
-                        <td colspan="6" class="text-right"><strong>TOTAL AMOUNT IN RS.</strong></td>
-                        <td><strong>1485000</strong></td>
-                    </tr>
-                </tbody>
+            <p>SUBJECT: Offer for MSD-90-01-076 Spares.</p>
+            <table>
+                <tr>
+                    <th>SN</th>
+                    <th>Part Number</th>
+                    <th>Part Description</th>
+                    <th>Qty.</th>
+                    <th>UNITS</th>
+                    <th>UNIT PRICE IN RS.</th>
+                    <th>TOTAL PRICE IN RS.</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>8134-2100-270</td>
+                    <td>Solenoid Water Assembly</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>370000</td>
+                    <td>370000</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Separating Disk/Upper Disk</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>85000</td>
+                    <td>85000</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Booster Pump with pressure tank, NRV, Pressure Switch etc</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>350000</td>
+                    <td>350000</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>PLC Panel along with Danfoss Frequency Drive and touch type Colored HMI (SS 304 BODY)</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>380000</td>
+                    <td>380000</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>MOTOR (30 HP)</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>180000</td>
+                    <td>180000</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Inlet-Outlet Pipeline</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>50000</td>
+                    <td>50000</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Miscellaneous Items Charges</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>50000</td>
+                    <td>50000</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>SERVICE KIT (ALL BOWL GASKET & BEARING, PAPER GASKET, GEAR OIL ETC)</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>170000</td>
+                    <td>170000</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Commissioning Charges (To & fro conveyance charges)<br>Visit Description<br>Foundation grounting<br>Machine Erection<br>Water Trial & Product Trial</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>100000</td>
+                    <td>100000</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Labor Charges</td>
+                    <td>1</td>
+                    <td>SET</td>
+                    <td>70000</td>
+                    <td>70000</td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: right;"><strong>TOTAL AMOUNT IN RS.</strong></td>
+                    <td><strong>1485000</strong></td>
+                </tr>
             </table>
         </div>
         <div class="footer">
@@ -179,13 +213,10 @@
     </div>
 
     <div id="page3" class="page container">
-    <div class="header" style="display: flex; align-items: center; padding: 10px;">
-        <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="max-width: 150px; margin-right: 20px;">
-        <div>
+        <div class="header">
             <h2>Sarthak Engineering</h2>
             <p>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</p>
         </div>
-    </div>
         <div class="content">
             <h3>Terms & Conditions of Sale:</h3>
             <ul>
@@ -226,13 +257,10 @@
     </div>
 
     <div id="page4" class="page container">
-    <div class="header" style="display: flex; align-items: center; padding: 10px;">
-        <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="max-width: 150px; margin-right: 20px;">
-        <div>
+        <div class="header">
             <h2>Sarthak Engineering</h2>
             <p>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</p>
         </div>
-    </div>
         <div class="content">
             <h3>5. Ordering Information</h3>
             <p>Please issue the purchase order in favor of –</p>
@@ -242,29 +270,27 @@
             Email Id: sales@sarthakengineering.com<br>
             Contact No. 8814956109</p>
             <p>NOTES: For more details visit our website <a href="http://www.sarthakengineering.com">www.sarthakengineering.com</a></p>
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th>Bank Name</th>
-                        <td>YES BANK</td>
-                    </tr>
-                    <tr>
-                        <th>Name in Bank</th>
-                        <td>SARTHAK ENGINEERING</td>
-                    </tr>
-                    <tr>
-                        <th>Account No.</th>
-                        <td>10588460000222</td>
-                    </tr>
-                    <tr>
-                        <th>Bank Branch</th>
-                        <td>VISHWAS NAGAR-110032</td>
-                    </tr>
-                    <tr>
-                        <th>IFSC Code</th>
-                        <td>YESB0001058</td>
-                    </tr>
-                </tbody>
+            <table>
+                <tr>
+                    <th>Bank Name</th>
+                    <td>YES BANK</td>
+                </tr>
+                <tr>
+                    <th>Name in Bank</th>
+                    <td>SARTHAK ENGINEERING</td>
+                </tr>
+                <tr>
+                    <th>Account No.</th>
+                    <td>10588460000222</td>
+                </tr>
+                <tr>
+                    <th>Bank Branch</th>
+                    <td>VISHWAS NAGAR-110032</td>
+                </tr>
+                <tr>
+                    <th>IFSC Code</th>
+                    <td>YESB0001058</td>
+                </tr>
             </table>
             <h3>Contact Information</h3>
             <p>For any queries regarding this quotation, please contact us at:</p>
@@ -280,28 +306,18 @@
         </div>
     </div>
 
-    <div class="download-btn no-print">
+    <div class="download-btn">
         <button onclick="downloadPDF()">Download as PDF</button>
     </div>
 
     <script>
         function downloadPDF() {
-            document.querySelectorAll('.download-btn').forEach(btn => btn.style.display = 'none');
             const element = document.body;
             html2pdf().from(element).set({
                 filename: 'quotation.pdf',
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            }).toPdf().get('pdf').then(function (pdf) {
-                var totalPages = pdf.internal.getNumberOfPages();
-                for (var i = 1; i <= totalPages; i++) {
-                    pdf.setPage(i);
-                    pdf.setFontSize(10);
-                    pdf.text('Page ' + i + ' of ' + totalPages, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10);
-                }
-            }).save().then(() => {
-                document.querySelectorAll('.download-btn').forEach(btn => btn.style.display = 'block');
-            });
+            }).save();
         }
     </script>
 </body>
