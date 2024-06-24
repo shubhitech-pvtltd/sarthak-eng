@@ -7,7 +7,9 @@
 	
 <script>
     @if ($errors->any())
-        toastr.error('{!! implode('<br>', $errors->all()) !!}', 'Wrong Format', {timeOut: 5000});
+      @foreach ($errors->all() as $error)
+        toastr.error('{{ $error }}', 'Wrong Format', {timeOut: 5000});
+      @endforeach
     @endif
 
     @if (session('success'))
