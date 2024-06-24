@@ -15,7 +15,7 @@
         <form action="{{ route('quotation.update', $quotation->id) }}" method="post" id="editQuotationForm">
             @csrf
             @method('PUT')
-            <h5 class="text-primary">Edit Quotation</h5>
+            <h5 class="text-primary">Edit Quotation</h5> 
 
             {{-- Hidden Fields --}}
             <input type="hidden" name="quotation_id" value="{{ $quotation->id }}">
@@ -67,7 +67,7 @@
             <div class="customeritem" id="customeritems">
                 @foreach($quotation->quotationlists as $list)
                 <div class="form-group row border p-3 mb-3 bg-light rounded customer-wise-form">
-                    <div class="row">
+                    <!-- <div class="row"> -->
                         <input type="hidden" name="quotationlist_id[]" value="{{ $list->id }}">
                         <div class="col-sm-6">
                             <label class="col-form-label fw-bold">Machine Name<span class="text-danger">*</span></label>
@@ -81,7 +81,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-3">
                             <label class="col-form-label fw-bold">Part No.<span class="text-danger">*</span></label>
                             <select class="form-control part_id" name="part_id[]">
                                 <option value="">Select Part</option>
@@ -93,10 +93,10 @@
                             </select>
                         </div>
 
-                        <div class="col-sm-4 fw-bold">
+                        <div class="col-sm-3 fw-bold">
                             <label class="col-form-label">Buying Price<span class="text-danger">*</span></label>
                             <input type="text" name="buying_price[]" value="{{ $list->buying_price }}" class="form-control buying_price"
-                                placeholder="Buying Price">
+                                placeholder="Buying Price" disabled>
                         </div>
 
                         <div class="col-sm-4">
@@ -111,16 +111,24 @@
                                 placeholder="Quantity">
                         </div>
                         <div class="col-sm-4">
-                            <label class="col-form-label fw-bold">Discount<span class="text-danger">*</span></label>
+                            <label class="col-form-label fw-bold">Discount Price<span class="text-danger">*</span></label>
                             <input type="text" name="discount[]" value="{{ $list->discount }}"
-                                class="form-control discount" placeholder="Discount">
+                                class="form-control discount" placeholder="Discount Price">
                         </div>
                         <div class="col-sm-3">
                             <label class="col-form-label fw-bold">Discount %<span class="text-danger">*</span></label>
                             <input type="text" name="discount_percent[]" value="{{ $list->discount_percent }}"
                                 class="form-control discount_percent" placeholder="Discount Percent">
                         </div>
+
+
                         <div class="col-sm-3">
+                           <label class="col-form-label fw-bold">Total<span class="text-danger">*</span></label>
+                           <input type="text" name="Total[]" class="form-control total" placeholder="Total" readonly>
+                        </div>
+
+                        
+                        <div class="col-sm-4">
                             <label class="col-form-label fw-bold">Currency<span class="text-danger">*</span></label>
                             <select class="form-control currency" name="currency[]">
                                 <option disabled>Select Currency</option>
@@ -136,7 +144,7 @@
                                 Delete <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </div>
-                    </div>
+                    <!-- </div> -->
                 </div>
                 @endforeach
             </div>
@@ -163,7 +171,7 @@ $(document).ready(function() {
     var customerWiseForm = `
         <div class="form-group row border p-3 mb-3 bg-light rounded customer-wise-form">
             <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-6">
                     <label class="col-form-label fw-bold">Machine Name<span class="text-danger">*</span></label>
                     <select class="form-control machine_id" name="machine_id[]">
                         <option value="">Select Machine</option>
@@ -183,23 +191,30 @@ $(document).ready(function() {
                     <input type="text" name="buying_price[]" class="form-control buying_price" placeholder="Buying Price">
                 </div>
 
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Selling Price<span class="text-danger">*</span></label>
-                    <input type="text" name="price[]" class="form-control price" placeholder="Selling Price">
+                    <input type="text" name="price[]" class="form-control price" placeholder="Selling Price" disabled>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Quantity<span class="text-danger">*</span></label>
                     <input type="text" name="quantity[]" class="form-control" placeholder="Quantity">
                 </div>
-                <div class="col-sm-3">
-                    <label class="col-form-label fw-bold">Discount<span class="text-danger">*</span></label>
-                    <input type="text" name="discount[]" class="form-control discount" placeholder="Discount">
+                <div class="col-sm-4">
+                    <label class="col-form-label fw-bold">Discount Price<span class="text-danger">*</span></label>
+                    <input type="text" name="discount[]" class="form-control discount" placeholder="Discount Price">
                 </div>
                 <div class="col-sm-3">
                     <label class="col-form-label fw-bold">Discount %<span class="text-danger">*</span></label>
                     <input type="text" name="discount_percent[]" class="form-control discount_percent" placeholder="Discount Percent">
                 </div>
+
                 <div class="col-sm-3">
+                   <label class="col-form-label fw-bold">Total<span class="text-danger">*</span></label>
+                   <input type="text" name="Total[]" class="form-control total" placeholder="Total" readonly>
+                </div>
+
+
+                <div class="col-sm-4">
                     <label class="col-form-label fw-bold">Currency<span class="text-danger">*</span></label>
                     <select class="form-control currency" name="currency[]">
                         <option disabled selected>Select Currency</option>
@@ -208,7 +223,7 @@ $(document).ready(function() {
                         @endforeach
                     </select>
                 </div>
-                <div class="col-sm-3 mb-1 d-flex align-items-end">
+                <div class="col-sm-2 mb-1 d-flex align-items-end">
                     <a class="btn btn-danger text-white deleteBtn">
                         Delete <i class="fa-solid fa-trash-can"></i>
                     </a>
