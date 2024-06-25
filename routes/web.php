@@ -61,6 +61,8 @@ Route::get('/getCustomerprice', [QuotationController::class, 'getCustomerprice']
 
 Route::get('/quotation/{id?}/view', [QuotationController::class, 'viewQuotation'])->name('quotation.view');
 
+Route::get('/quotation/{id}/pdf', [QuotationController::class, 'downloadPDF'])->name('quotation.pdf');
+
 // Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');
 
 // Route::get('/machines/{machine}/edit', [MachineController::class, 'edit'])->name('machines.edit');
