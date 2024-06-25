@@ -237,6 +237,13 @@ class QuotationController extends Controller
         }
     }
 
+    public function downloadPDF($id)
+    {
+        $quotation = Quotation::findOrFail($id);
+        $pdf = PDF::loadView('quotation.quotationpdf', compact('quotation'));
+        return $pdf->download('quotation.pdf');
+    }
+
     public function destroy($id)
 {
     try {
