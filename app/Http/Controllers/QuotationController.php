@@ -21,32 +21,14 @@ class QuotationController extends Controller
         return view('quotation.quotationlist');
     }
 
-    public function data(Request $request)
+    public function data()
     {
-        $columns = [
-            'quotations.id',
-            'clients.company_name',
-            'quotations.title',
-            'quotations.description',
-            'quotations.grand_total',
-        ];
-    
-        $query = Quotation::select($columns)
-            ->leftJoin('clients', 'quotations.customer_id', '=', 'clients.id');
-    
-        if ($request->has('search') && !empty($request->input('search.value'))) {
-            $searchValue = strtolower($request->input('search.value'));
-            $query->where(function ($query) use ($searchValue) {
-                $query->whereRaw('LOWER(quotations.title) like ?', ["%{$searchValue}%"])
-                    ->orWhereRaw('LOWER(quotations.description) like ?', ["%{$searchValue}%"])
-                    ->orWhereRaw('LOWER(quotations.grand_total) like ?', ["%{$searchValue}%"])
-                    ->orWhereRaw('LOWER(clients.company_name) like ?', ["%{$searchValue}%"]);
-            });
-        }
-    
-        $recordsTotal = Quotation::count();
-    
-        return DataTables::of($query)
+        $quotation = Quotation::select(['quotations.id','clients.company_name','quotations.title','quotations.description','quotations.grand_total'])
+                                ->join('clients', 'quotations.customer_id', '=', 'clients.id')
+                                ->orderBy('clients.company_name', 'asc')
+                                ->get();
+      
+        return DataTables::of($quotation)
             ->addColumn('action', function ($quotation) {
                 return '<div class="dropdown">
                             <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
@@ -63,11 +45,9 @@ class QuotationController extends Controller
                         </div>';
             })
             ->rawColumns(['action'])
-            ->setTotalRecords($recordsTotal)
-            ->skipPaging()
             ->make(true);
     }
-    
+
     
     public function get_customerlist_details(Request $request)
     {
