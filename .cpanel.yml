@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/ydjhzzcu09t9/public_html/sarthakengineering.zeevahrms.com
+    - /bin/cp * $DEPLOYPATH
