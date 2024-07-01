@@ -1,12 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Machine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
-
 class MachineController extends Controller
 {
     public function index()
@@ -15,12 +13,9 @@ class MachineController extends Controller
         return view('machine.machinelist', compact('machines')); 
     }
 
-    
-  //  For Server Side Datatable
    public function getMachines()
    {
         $machines = Machine::select(['id' , 'machine_name', 'description', 'model_no']);
-
         return DataTables::of($machines)
             ->addColumn('action', function ($machine) {
                 return '
@@ -52,12 +47,10 @@ class MachineController extends Controller
         ]);
 
         $machine = new Machine; 
-        $this->setMachineAttributes($machine, $request); 
-      
+        $this->setMachineAttributes($machine, $request);  
         $machine->created_by = Session::get('id');
         $machine->updated_by = Session::get('id');
         $machine->save();
-
         return redirect('/machine')->with('success', 'Machine added successfully'); 
     }
 
@@ -76,10 +69,8 @@ class MachineController extends Controller
 
         $machine = Machine::findOrFail($id);
         $this->setMachineAttributes($machine, $request);
-
         $machine->updated_by = Session::get('id');
         $machine->save();
-
         return redirect('/machine')->with('success', 'Machine updated successfully'); 
     }
 

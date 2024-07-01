@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Spare;
 use Yajra\DataTables\Facades\DataTables;
@@ -9,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\Machine;
-
+use Illuminate\Support\Facades\DB;
 class SpareController extends Controller
 {
     public function index()
@@ -30,15 +29,13 @@ class SpareController extends Controller
             'spares.gea_selling_price',
             'spares.unit',
             'spares.hsn_code',
-            'spares.currency',
+            'spares.comment',
             'spares.dimension',
             'machines.machine_name'
         ])
         ->join('machines', 'spares.machine_id', '=', 'machines.id')
         ->orderBy('machines.machine_name', 'asc')
         ->get();
-
-       
 
         return DataTables::of($spares)
             ->addColumn('action', function ($spare) {
@@ -59,16 +56,12 @@ class SpareController extends Controller
 
     public function create()
     {
-        // $machines = Machine::all();
         $machines = Machine::all()->sortBy('machine_name'); 
         return view('spare.addsparepart', compact('machines'));
     }
 
     public function store(Request $request)
     {
-        
-
-
         $request->validate([
             'machine_id' => 'required',
             'part_no' => 'required',
@@ -79,20 +72,18 @@ class SpareController extends Controller
             'gea_selling_price' => 'required|numeric',
             'unit' => 'required|string',
             'hsn_code' => 'required|string',
-            'currency' => 'required|string',
             'dimension' => 'required|string',
-            'drawing_upload' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+            'drawing_upload' => 'nullable|file|mimes:jpeg,webp,png,jpg|max:2048',
         ]);
 
         try {
+            DB::beginTransaction();
             $imgName = null;
             if ($request->hasFile('drawing_upload')) {
                 Log::info('File found in the request');
                 $file = $request->file('drawing_upload');
                 $imgName = "Spare_" . Str::random(30) . "." . $file->getClientOriginalExtension();
-                // $path = $file->storeAs('images/upload/sparedrawing', $imgName);
                 $path = $file->storeAs('public/images/upload/sparedrawing', $imgName);
-
                 if ($path) {
                     Log::info('File uploaded successfully: ' . $path);
                 } else {
@@ -102,8 +93,7 @@ class SpareController extends Controller
             } else {
                 Log::info('No file found in the request');
             }
-            
-
+        
             Spare::create([
                 "machine_id" => $request->machine_id,
                 "part_no" => $request->part_no,
@@ -115,16 +105,15 @@ class SpareController extends Controller
                 "gea_selling_price" => $request->gea_selling_price,
                 "unit" => $request->unit,
                 "hsn_code" => $request->hsn_code,
-                "currency" => $request->currency,
+                "comment" => $request->comment,
                 "dimension" => $request->dimension,
                 'created_by' => session('id'),
                 'updated_by' => session('id')
-                
             ]);
-         
-
+            DB::commit();
             return redirect('/spare')->with('success', 'Spare added successfully');
         } catch (\Exception $e) {
+            DB::rollback();
             Log::error('Error while adding the record: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error while adding the record');
         }
@@ -132,8 +121,6 @@ class SpareController extends Controller
 
     public function edit(Spare $spare)
     {
-        
-        // $machines = Machine::all();
         $machines = Machine::all()->sortBy('machine_name'); 
         return view('spare.addsparepart', compact('machines', 'spare'));
     }
@@ -150,14 +137,13 @@ class SpareController extends Controller
             'gea_selling_price' => 'required|numeric',
             'unit' => 'required|string',
             'hsn_code' => 'required|string',
-            'currency' => 'required|string',
             'dimension' => 'required|string',
-            'drawing_upload' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+            'drawing_upload' => 'nullable|file|mimes:jpeg,webp,png,jpg|max:2048',
         ]);
 
         try {
+            DB::beginTransaction();
             $spare = Spare::findOrFail($id);
-
             $spare->update([
                 "machine_id" => $request->machine_id,
                 "part_no" => $request->part_no,
@@ -168,10 +154,11 @@ class SpareController extends Controller
                 "gea_selling_price" => $request->gea_selling_price,
                 "unit" => $request->unit,
                 "hsn_code" => $request->hsn_code,
-                "currency" => $request->currency,
+                "comment" => $request->comment,
                 "dimension" => $request->dimension,
                 'updated_by' => session('id')
             ]);
+            DB::commit();
 
             if ($request->hasFile('drawing_upload')) {
                 Log::info('File found in the request');             
@@ -181,7 +168,6 @@ class SpareController extends Controller
                 $path = $file->storeAs('public/images/upload/sparedrawing', $imgName);
                 if ($path) {
                     Log::info('File uploaded successfully: ' . $path);
-                   
                     $spare->update([
                         "drawing_upload" => $imgName,
                     ]);
@@ -192,14 +178,13 @@ class SpareController extends Controller
             } else {
                 Log::info('No file found in the request');
             }
-
             return redirect('/spare')->with('success', 'Spare updated successfully');
         } catch (\Exception $e) {
+            DB::rollback();
             Log::error('Error while updating the record: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error while updating the record');
         }
     }
-
 
     public function destroy($id)
     {

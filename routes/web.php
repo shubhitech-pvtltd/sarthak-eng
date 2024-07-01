@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerWisePriceController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SpareController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\BuyerController;
 
 
 Route::get('/login',[LoginController::class,'login']);
@@ -41,18 +42,21 @@ Route::middleware(['CheckAuth'])->group(function(){
 
     Route::resource('/spare', SpareController::class);
 
-    Route::get('/customerprice/data', [CustomerWisePriceController::class, 'getCustomerprice']);
-    
+    Route::get('/customerprice/data', [CustomerWisePriceController::class, 'getCustomerprice'])->name('customerprice.data');
     Route::resource('/customerprice', CustomerWisePriceController::class);
 
-    Route::get('/quotation/data', [QuotationController::class, 'data'])->name('quotation.data');
 
+    Route::get('/quotation/data', [QuotationController::class, 'data'])->name('quotation.data');
     Route::resource('/quotation', QuotationController::class);
+
+    Route::get('/buyer/data' , [BuyerController::class,'getBuyers']);
+    Route::resource('/buyer' , BuyerController::class);
 
 });
 
 
 Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
+
 Route::get('/get-customerlist-details' , [QuotationController::class ,'get_customerlist_details'])->name('get-customerlist-details');
 
 Route::get('/get-quotationlist-details' , [QuotationController::class ,'getQuotationListDetails'])->name('get-Quotationlist-details');
@@ -62,6 +66,7 @@ Route::get('/getCustomerprice', [QuotationController::class, 'getCustomerprice']
 Route::get('/quotation/{id?}/view', [QuotationController::class, 'viewQuotation'])->name('quotation.view');
 
 Route::get('/quotation/{id}/pdf', [QuotationController::class, 'downloadPDF'])->name('quotation.pdf');
+
 
 // Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');
 

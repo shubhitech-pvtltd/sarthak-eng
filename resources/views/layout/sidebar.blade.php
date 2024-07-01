@@ -14,7 +14,7 @@
 					</li>
 					<li class="dropdown">
 						<a href="{{url('/user')}}"  class="dropdown-toggle no-arrow">
-							<span class="fa fa-pencil"></span><span class="mtext">User</span>
+							<span class="fa fa-user"></span><span class="mtext">User</span>
 						</a>
 					</li>
 					<li class="dropdown">
@@ -41,6 +41,13 @@
 					<li class="dropdown">
 						<a href="{{url('/customerprice')}}" class="dropdown-toggle no-arrow">
 							<span class="fa fa-wallet"></span><span class="mtext">Price</span>
+						</a>
+						
+					</li>
+
+					<li class="dropdown">
+						<a href="{{url('/buyer')}}" class="dropdown-toggle no-arrow">
+							<span class="fa fa-regular fa-address-card"></span><span class="mtext">Buyers</span>
 						</a>
 						
 					</li>

@@ -2,7 +2,6 @@
 
 @section('main-section')
 
-
 <div class="main-container m-5">
     <div class="clearfix">
         <div class="pull-left">
@@ -10,17 +9,14 @@
         </div>
         <ol class="breadcrumb float-right">
             <li class="breadcrumb-item"><a href="{{ url('/')}}">Dashboard</a></li>
-            <li class="breadcrumb-item">Client</li>
+            <li class="breadcrumb-item"><a href="{{ url('/client')}}">Client</a></li>
             <li class="breadcrumb-item active textChng">{{isset($client) ? "Edit" : "Create"}} Client</li>
         </ol>
     </div>
 
     <div class="pd-20 bg-white border-radius-4 box-shadow">
-
         <div class="col-md-12">
             <form action="{{isset($client) ? url('/client/'.$client->id) : url('/client')}}" method="post">
-
-
                 <!-- CSRF Token -->
                 @csrf
 
@@ -30,7 +26,6 @@
                 @endisset
 
                 <h5 class="text-primary">Owner Details</h5>
-
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Owner Name<span class="text-danger">*</span></label>
@@ -126,7 +121,8 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-6">
-                        <label class="col-form-label fw-bold">Country Selection<span class="text-danger">*</span></label>
+                        <label class="col-form-label fw-bold">Country Selection<span
+                                class="text-danger">*</span></label>
 
                         <select class="js-example-basic-single1 form-control" name="country" id="country"
                             value="{{ isset($client) ? $client->country : '' }}">
@@ -148,12 +144,26 @@
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label ">City<span class="text-danger"></span></label>
                         <input type="city" name="city" value="{{isset($client) ? $client->city : ''}}"
-                            class="form-control" placeholder="Enter Company City ">
+                        class="form-control" placeholder="Enter Company City ">
                     </div>
                     <div class="col-sm-6">
                         <label class="col-form-label fw-bold">Pin/Zip Code<span class="text-danger"></span></label>
                         <input type="integer" name="pincode" value="{{isset($client) ? $client->pincode : ''}}"
-                            class="form-control" id="pincode" placeholder="Enter Company Pin/Zip Code">
+                        class="form-control" id="pincode" placeholder="Enter Company Pin/Zip Code">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <label class="col-form-label fw-bold">Currency <span class="text-danger">*</span></label>
+                        <select class="form-control currency" name="currency" id="currency">
+                            <option disabled>Select Currency</option>
+                            @foreach(getCurrency() as $key => $value)
+                            <option value="{{ $key }}"
+                                {{ isset($client) && $client->currency == $key ? 'selected' : '' }}>
+                                {{ $value }}
+                            </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <hr>
