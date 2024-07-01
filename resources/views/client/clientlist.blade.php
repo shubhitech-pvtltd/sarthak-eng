@@ -9,7 +9,7 @@
                 <h3 class="text-blue">Clients</h3>
             </div>
             <div class="pull-right">
-                <a href="{{ url('/client/create')}}" class="btn btn-primary">Add client</a>
+                <a href="{{ url('/client/create')}}" class="btn btn-primary">Add Client</a>
             </div>
         </div>
         <div class="row">
@@ -23,7 +23,6 @@
                         <th class="datatable-nosort">Action</th>
                     </tr>
                 </thead>
-
             </table>
         </div>
     </div>

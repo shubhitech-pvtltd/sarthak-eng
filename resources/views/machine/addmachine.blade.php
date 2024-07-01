@@ -9,7 +9,7 @@
         </div>
         <ol class="breadcrumb float-right">
             <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-            <li class="breadcrumb-item">Machine</li>
+            <li class="breadcrumb-item"><a href="{{ url('/machine')}}">Machine</a></li>
             <li class="breadcrumb-item active textChng">{{ isset($machine) ? "Edit" : "Create" }} Machine</li>
         </ol>
     </div>
@@ -26,7 +26,6 @@
             @endisset
 
             <h5 class="text-primary">Machine Details</h5>
-
             <div class="form-group row">
                 <div class="col-sm-6 fw-bold">
                     <label class="col-form-label">Machine Name<span class="text-danger">*</span></label>
@@ -42,9 +41,9 @@
 
             <div class="form-group row">
                 <div class="col-sm-12">
-                    <label class="col-form-label fw-bold">Description<span class="text-danger">*</span></label>
+                    <label class="col-form-label fw-bold">Comment<span class="text-danger">*</span></label>
                     <textarea class="form-control" cols="10" rows="2" name="description" id="name"
-                        placeholder="Enter Your Description">{{ isset($machine) ? $machine->description : '' }}</textarea>
+                        placeholder="Comment">{{ isset($machine) ? $machine->description : '' }}</textarea>
                 </div>
             </div>
 
@@ -55,8 +54,5 @@
         </form>
     </div>
 </div>
-
-
-
 
 @endsection

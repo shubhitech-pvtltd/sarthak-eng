@@ -17,7 +17,7 @@ class Spare extends Model
         'gea_selling_price',
         'unit',
         'hsn_code',
-        'currency',
+        'comment',
         'dimension',
         'created_by',
         'updated_by',

@@ -57,6 +57,6 @@ $('.data-table').DataTable({
 </script>
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/sweetalert2/sweetalert2.css') }}">
-<script src="{{ asset('vendor/sweetalert2/sweet-alert.init.js') }}"></script> {{-- Custom sweet alert code --}}
+<script src="{{ asset('vendor/sweetalert2/sweet-alert.init.js') }}"></script> 
 
 @endsection

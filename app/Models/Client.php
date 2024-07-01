@@ -9,4 +9,9 @@ class Client extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function quotations()
+    {
+        return $this->hasMany(Quotation::class, 'customer_id');
+    }
 }

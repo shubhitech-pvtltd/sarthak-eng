@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,11 +11,10 @@ class Customerprice extends Model
         'part_id',
         'customer_id',
         'price',
+        'buying_price',
         'discount',
         'discount_percent',
-        'currency',
         'created_by',
         'updated_by',
     ];
 }
-

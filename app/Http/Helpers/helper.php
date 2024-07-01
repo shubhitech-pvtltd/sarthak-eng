@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Buyer;
+
 function getRoleName($role_id){
    switch ($role_id){
         case "1":
@@ -358,4 +360,8 @@ function getCountry(){
             'ZM' => 'Zambia',
             'ZW' => 'Zimbabwe'
     ];
+}
+
+function getBuyersName(){
+    return Buyer::select('buyer_name')->get();
 }

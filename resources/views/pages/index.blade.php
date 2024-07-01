@@ -10,12 +10,12 @@
                     <div class="project-info clearfix">
                         <div class="project-info-left">
                             <div class="icon box-shadow bg-blue text-white">
-                                <i class="fa fa-briefcase"></i>
+                                <i class="fa fa-table"></i>
                             </div>
                         </div>
                         <div class="project-info-right">
                             <span class="no text-blue weight-500 font-24">40</span>
-                            <p class="weight-400 font-18">My Earnings</p>
+                            <p class="weight-400 font-18">List Of Customer</p>
                         </div>
                     </div>
                     <div class="project-info-progress">
@@ -34,12 +34,12 @@
                     <div class="project-info clearfix">
                         <div class="project-info-left">
                             <div class="icon box-shadow bg-light-green text-white">
-                                <i class="fa fa-handshake-o"></i>
+                                <i class="fa fa-industry"></i>
                             </div>
                         </div>
                         <div class="project-info-right">
                             <span class="no text-light-green weight-500 font-24">50</span>
-                            <p class="weight-400 font-18">Business Captured</p>
+                            <p class="weight-400 font-18">List Of Machine</p>
                         </div>
                     </div>
                     <div class="project-info-progress">
@@ -58,12 +58,12 @@
                     <div class="project-info clearfix">
                         <div class="project-info-left">
                             <div class="icon box-shadow bg-light-orange text-white">
-                                <i class="fa fa-list-alt"></i>
+                                <i class="fa fa-regular fa-address-card"></i>
                             </div>
                         </div>
                         <div class="project-info-right">
                             <span class="no text-light-orange weight-500 font-24">2 Lakhs</span>
-                            <p class="weight-400 font-18">Projects Complete</p>
+                            <p class="weight-400 font-18">List Of Buyer</p>
                         </div>
                     </div>
                     <div class="project-info-progress">
@@ -82,12 +82,12 @@
                     <div class="project-info clearfix">
                         <div class="project-info-left">
                             <div class="icon box-shadow bg-light-purple text-white">
-                                <i class="fa fa-podcast"></i>
+                                <i class="fa fa-indent"></i>
                             </div>
                         </div>
                         <div class="project-info-right">
                             <span class="no text-light-purple weight-500 font-24">5.1 Lakhs</span>
-                            <p class="weight-400 font-18">Pending Business</p>
+                            <p class="weight-400 font-18">List Of Quotation</p>
                         </div>
                     </div>
                     <div class="project-info-progress">

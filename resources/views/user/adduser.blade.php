@@ -10,7 +10,7 @@
         </div>
         <ol class="breadcrumb float-right">
             <li class="breadcrumb-item"><a href="{{ url('/')}}">Dashboard</a></li>
-            <li class="breadcrumb-item">User</li>
+            <li class="breadcrumb-item"><a href="{{ url('/user')}}">User</a></li>
             <li class="breadcrumb-item active textChng">{{isset($user) ? "Edit" : "Create"}} User</li>
         </ol>
     </div>

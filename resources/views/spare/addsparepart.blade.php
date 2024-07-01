@@ -9,7 +9,7 @@
         </div>
         <ol class="breadcrumb float-right">
             <li class="breadcrumb-item"><a href="{{ url('/') }}">Dashboard</a></li>
-            <li class="breadcrumb-item">spare</li>
+            <li class="breadcrumb-item"><a href="{{ url('/spare')}}">Spare</a></li>
             <li class="breadcrumb-item active textChng">{{ isset($spare) ? "Edit" : "Create" }} Spare</li>
         </ol>
     </div>
@@ -31,7 +31,6 @@
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Machine Name<span class="text-danger">*</span></label>
-                         <!-- <select class="selectpicker form-control" style="border:1px solid #ced4da !important;" data-live-search="true" name="machine_id"> -->
                         <select class="js-example-basic-single1  form-control" name="machine_id">
                             <option value="">Select Machine</option>
                             @foreach($machines as $machine)
@@ -48,21 +47,33 @@
                             class="form-control" id="part_no" placeholder="Enter Your Part No.">
                     </div>
                 </div>
-
                 <div class="form-group row">
-                    
-                    <div class="col-sm-6 fw-bold">
-                        <label class="col-form-label">Purchase From<span class="text-danger">*</span></label>
-                        <input type="text" name="purchase_from" value="{{ isset($spare) ? $spare->purchase_from : '' }}"
-                            class="form-control" id="purchase_from" placeholder="Enter Your Purchase From">
+                    <div class="col-sm-12">
+                        <label for="description" class="col-form-label fw-bold">Part Description</label>
+                        <input type="text" class="form-control" name="description" id="description"
+                            placeholder="Enter Your Part Description"
+                            value="{{ isset($spare) ? $spare->description : '' }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                <div class="col-sm-6 fw-bold">
+                        <label for="purchase_from" class="col-form-label">Purchase From</label>
+                        <select class="js-example-basic-single1 form-control" name="purchase_from" id="purchase_from">
+                            <option value="">Purchase From</option>
+                            @foreach(getBuyersName() as $buyer)
+                            <option value="{{ $buyer->buyer_name }}" {{ isset($spare) && $spare->purchase_from == $buyer->buyer_name ? 'selected' : '' }}>
+                                {{ $buyer->buyer_name }}
+                            </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-sm-6 fw-bold">
-                        <label class="col-form-label">Buying Price<span class="text-danger">*</span></label>
+                        <label for="buying_price" class="col-form-label">Buying Price<span
+                                class="text-danger">*</span></label>
                         <input type="text" name="buying_price" value="{{ isset($spare) ? $spare->buying_price : '' }}"
                             class="form-control" id="buying_price" placeholder="Enter Your Buying Price">
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Selling Price<span class="text-danger">*</span></label>
@@ -76,36 +87,18 @@
                             id="gea_selling_price" placeholder="Enter Your Gea Selling Price">
                     </div>
                 </div>
-
                 <div class="form-group row">
-                    <div class="col-sm-12 fw-bold">
+                    <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Unit<span class="text-danger">*</span></label>
                         <input type="text" name="unit" value="{{ isset($spare) ? $spare->unit : '' }}"
                             class="form-control" id="unit" placeholder="Enter Your Unit">
                     </div>
-                </div>
-
-                <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">HSN Code<span class="text-danger">*</span></label>
                         <input type="text" name="hsn_code" value="{{ isset($spare) ? $spare->hsn_code : '' }}"
                             class="form-control" id="hsn_code" placeholder="Enter Your HSN Code">
                     </div>
-
-                    <div class="col-sm-6 fw-bold">
-                        <label class="col-form-label">Currency Selection<span class="text-danger">*</span></label>
-                        <select class="js-example-basic-single1 form-control" name="currency" id="currency"
-                            value="{{ isset($spare) ? $spare->currency : '' }}">
-                            <option disabled selected>Select Currency</option>
-                            @foreach(getcurrency() as $key => $value)
-                            <option value="{{ $key }}"
-                                {{ isset($spare) && $spare->currency == $key ? 'selected' : '' }}>{{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
                 </div>
-
                 <div class="form-group row">
                     <div class="col-sm-6">
                         <label class="col-form-label fw-bold">Dimension</label>
@@ -114,15 +107,41 @@
                     </div>
                     <div class="col-sm-6">
                         <label class="col-form-label fw-bold">Drawing Upload</label>
-                        <input type="file" name="drawing_upload" value="{{ isset($spare) ? $spare->drawing_upload : '' }}" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                        @if(isset($spare) && !empty($spare->drawing_upload))
+                            <!-- Eye icon for triggering the modal -->
+                            <a href="#" data-toggle="modal" data-target="#drawingModal">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <div class="modal fade" id="drawingModal" tabindex="-1" role="dialog" aria-labelledby="drawingModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="drawingModalLabel">Drawing Image</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <img src="{{ asset('storage/images/upload/sparedrawing/' . $spare->drawing_upload) }}" alt="Drawing Image" class="img-fluid">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        <input type="file" name="drawing_upload"
+                            value="{{ isset($spare) ? $spare->drawing_upload : '' }}" class="form-control"
+                            accept=".pdf,.jpg,.jpeg,.png">    
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="col-sm-12">
-                        <label class="col-form-label fw-bold">Description</label>
-                        <textarea class="form-control" name="description" id="description"
-                            placeholder="Enter Your Description">{{ isset($spare) ? $spare->description : '' }}</textarea>
+                        <label class="col-form-label fw-bold">Comment</label>
+                        <textarea class="form-control" name="comment"
+                            placeholder="Comment">{{ isset($spare) ? $spare->comment : '' }}</textarea>
                     </div>
                 </div>
 
