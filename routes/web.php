@@ -9,6 +9,7 @@ use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SpareController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\HomeController;
 
 
 Route::get('/login',[LoginController::class,'login']);
@@ -17,7 +18,7 @@ Route::post('/login',[LoginController::class,'SubmitLogin']);
 
 Route::middleware(['CheckAuth'])->group(function(){
 
-    Route::view('/','pages.index');
+    Route::get('/', [HomeController::class, 'index']);
 
     Route::view('/forgot-password','login.forgot-password');
     
@@ -56,6 +57,8 @@ Route::middleware(['CheckAuth'])->group(function(){
 
 
 Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
+
+Route::get('/get-customerprice-details' , [CustomerWisePriceController::class ,'get_customerlist_details'])->name('get-customerprice-details');
 
 Route::get('/get-customerlist-details' , [QuotationController::class ,'get_customerlist_details'])->name('get-customerlist-details');
 

@@ -156,7 +156,7 @@ $(document).ready(function() {
         let _this = $(this);
 
         $.ajax({
-            url: '{{ route("get-customerlist-details") }}',
+            url: '{{ route("get-customerprice-details") }}',
             type: 'GET',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),

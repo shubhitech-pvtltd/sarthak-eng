@@ -54,11 +54,14 @@ class SpareController extends Controller
             ->make(true);
     }
 
+
     public function create()
-    {
-        $machines = Machine::all()->sortBy('machine_name'); 
-        return view('spare.addsparepart', compact('machines'));
-    }
+{
+    $machines = Machine::select('id', 'machine_name', 'model_no')->orderBy('machine_name')->orderBy('model_no')->get();
+    
+    return view('spare.addsparepart', compact('machines'));
+}
+
 
     public function store(Request $request)
     {
@@ -121,7 +124,8 @@ class SpareController extends Controller
 
     public function edit(Spare $spare)
     {
-        $machines = Machine::all()->sortBy('machine_name'); 
+        $machines = Machine::select('id', 'machine_name', 'model_no')->orderBy('machine_name')->orderBy('model_no')->get();
+
         return view('spare.addsparepart', compact('machines', 'spare'));
     }
 

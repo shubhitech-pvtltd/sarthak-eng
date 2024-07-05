@@ -219,12 +219,12 @@ class QuotationController extends Controller
         }
     }
 
-    public function downloadPDF($id)
-    {
-        $quotation = Quotation::with('client', 'quotationlists')->findOrFail($id);
-        $pdf = Pdf::loadView('quotation.quotationview', compact('quotation'));
-        return $pdf->download('quotation.pdf');
-    }
+    // public function downloadPDF($id)
+    // {
+    //     $quotation = Quotation::with('client', 'quotationlists')->findOrFail($id);
+    //     $pdf = Pdf::loadView('quotation.quotationview', compact('quotation'));
+    //     return $pdf->download('quotation.pdf');
+    // }
 
     public function destroy($id)
 {
