@@ -33,7 +33,7 @@ class SpareController extends Controller
             'spares.dimension',
             'machines.machine_name'
         ])
-        ->join('machines', 'spares.machine_id', '=', 'machines.id')
+        ->leftJoin('machines', 'spares.machine_id', '=', 'machines.id')
         ->orderBy('machines.machine_name', 'asc')
         ->get();
 
@@ -49,6 +49,9 @@ class SpareController extends Controller
                             <a class="dropdown-item deleteBtn" data-url="'.url('/spare/'.$spare->id).'"><i class="fa fa-trash"></i> Delete</a>
                         </div>
                     </div>';
+            })
+            ->editColumn('machines.machine_name', function ($spare) {
+                return $spare->machine_name ?? 'N/A';
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -66,7 +69,7 @@ class SpareController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'machine_id' => 'required',
+            'machine_id' => 'nullable|exists:machines,id',
             'part_no' => 'required',
             'description' => 'required',
             'purchase_from' => 'required',
@@ -132,7 +135,7 @@ class SpareController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'machine_id' => 'required',
+            'machine_id' => 'nullable|exists:machines,id',
             'part_no' => 'required',
             'description' => 'required',
             'purchase_from' => 'required',
