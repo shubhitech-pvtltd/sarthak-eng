@@ -30,7 +30,7 @@
                 <h5 class="text-primary">Machine Name</h5>
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
-                        <label class="col-form-label">Machine Name<span class="text-danger">*</span></label>
+                        <label class="col-form-label">Machine Name<span class="text-danger"></span></label>
                         <select class="js-example-basic-single1  form-control" name="machine_id">
                             <option value="">Select Machine</option>
                             @foreach($machines as $machine)

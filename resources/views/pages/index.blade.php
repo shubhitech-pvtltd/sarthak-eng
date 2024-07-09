@@ -14,17 +14,17 @@
                             </div>
                         </div>
                         <div class="project-info-right">
-                            <span class="no text-blue weight-500 font-24">40</span>
+                            <span class="no text-blue weight-500 font-24">{{ $customerprice }}</span>
                             <p class="weight-400 font-18">List Of Customer</p>
                         </div>
                     </div>
                     <div class="project-info-progress">
                         <div class="row clearfix">
                             <div class="col-sm-6 text-muted weight-500">Target</div>
-                            <div class="col-sm-6 text-right weight-500 font-14 text-muted">40</div>
+                            <div class="col-sm-6 text-right weight-500 font-14 text-muted">{{ $customerprice }}</div>
                         </div>
                         <div class="progress" style="height: 10px;">
-                            <div class="progress-bar bg-blue progress-bar-striped progress-bar-animated" role="progressbar" style="width: 40%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-blue progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $customerprice }}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -38,17 +38,17 @@
                             </div>
                         </div>
                         <div class="project-info-right">
-                            <span class="no text-light-green weight-500 font-24">50</span>
+                            <span class="no text-light-green weight-500 font-24">{{ $machineCount }}</span>
                             <p class="weight-400 font-18">List Of Machine</p>
                         </div>
                     </div>
                     <div class="project-info-progress">
                         <div class="row clearfix">
                             <div class="col-sm-6 text-muted weight-500">Target</div>
-                            <div class="col-sm-6 text-right weight-500 font-14 text-muted">50</div>
+                            <div class="col-sm-6 text-right weight-500 font-14 text-muted">{{ $machineCount }}</div>
                         </div>
                         <div class="progress" style="height: 10px;">
-                            <div class="progress-bar bg-light-green progress-bar-striped progress-bar-animated" role="progressbar" style="width: 50%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-light-green progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $machineCount }}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="project-info-right">
-                            <span class="no text-light-orange weight-500 font-24">2 Lakhs</span>
+                            <span class="no text-light-orange weight-500 font-24">{{ $buyerCount }}</span>
                             <p class="weight-400 font-18">List Of Buyer</p>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                             <div class="col-sm-6 text-right weight-500 font-14 text-muted">Good</div>
                         </div>
                         <div class="progress" style="height: 10px;">
-                            <div class="progress-bar bg-light-orange progress-bar-striped progress-bar-animated" role="progressbar" style="width: 80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-light-orange progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $buyerCount }}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <div class="project-info-right">
-                            <span class="no text-light-purple weight-500 font-24">5.1 Lakhs</span>
+                            <span class="no text-light-purple weight-500 font-24">{{ $quotationCount }}</span>
                             <p class="weight-400 font-18">List Of Quotation</p>
                         </div>
                     </div>
@@ -96,14 +96,13 @@
                             <div class="col-sm-6 text-right weight-500 font-14 text-muted">Average</div>
                         </div>
                         <div class="progress" style="height: 10px;">
-                            <div class="progress-bar bg-light-purple progress-bar-striped progress-bar-animated" role="progressbar" style="width: 75%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-light-purple progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $quotationCount }}%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
-
 @endsection
-

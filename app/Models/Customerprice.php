@@ -5,7 +5,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customerprice extends Model
 {
-    use HasFactory;  
+    use HasFactory; 
+    
+   
+    protected $table = 'customerprices';
+
     protected $fillable = [
         'machine_id',
         'part_id',
