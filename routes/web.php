@@ -48,10 +48,15 @@ Route::middleware(['CheckAuth'])->group(function(){
 
 
     Route::get('/quotation/data', [QuotationController::class, 'data'])->name('quotation.data');
+    
     Route::resource('/quotation', QuotationController::class);
 
     Route::get('/buyer/data' , [BuyerController::class,'getBuyers']);
+
+    Route::post('/buyer/add', [BuyerController::class, 'addBuyer'])->name('buyer.add');
+
     Route::resource('/buyer' , BuyerController::class);
+
 
 });
 
