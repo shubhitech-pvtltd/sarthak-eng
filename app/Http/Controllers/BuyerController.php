@@ -131,4 +131,34 @@ class BuyerController extends Controller
             return response()->json(['error' => 'Error While Deleting the Record']);
         }
     }
+    
+    public function addBuyer(Request $request)
+    {
+        $request->validate([
+            'buyer_name' => 'required',
+            'buyer_email' => 'required|email',
+            'buyer_phone_no' => 'required',
+            'buyer_address' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+            $buyer = Buyer::create([
+                "buyer_name" => $request->buyer_name,
+                "buyer_email" => $request->buyer_email,
+                "buyer_phone_no" => $request->buyer_phone_no,
+                "buyer_address" => $request->buyer_address,
+                'created_by' => session('id'),
+                'updated_by' => session('id')
+            ]);
+            DB::commit();
+            return redirect()->back()->with('success', 'Buyer Added Successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e);
+            return redirect()->back()->with('success', 'Error while adding the record');
+        }
+    }
+        
+    
 }

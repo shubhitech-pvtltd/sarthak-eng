@@ -53,13 +53,13 @@
     }
 
     .btn-container {
-            text-align: center;
-            margin: 20px 0;
+        text-align: center;
+        margin: 20px 0;
     }
 
     .edit-btn a {
-        background-color: #ffc107; 
-        color: #000; 
+        background-color: #ffc107;
+        color: #000;
         border: none;
         padding: 10px 20px;
         font-size: 16px;
@@ -70,7 +70,7 @@
     }
 
     .edit-btn a:hover {
-        background-color: #e0a800; 
+        background-color: #e0a800;
     }
 
     .download-btn button {
@@ -126,6 +126,12 @@
     th {
         background-color: #f2f2f2;
     }
+
+    .yellow th,
+    .yellow td {
+        background-color: yellow;
+
+    }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 </head>
@@ -136,13 +142,13 @@
             <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="width: 100px; height: auto;">
             <div style="margin-center: 50px;">
                 <h1>Sarthak Engineering</h1>
-                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</strong>
+                <strong>Works : Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India</strong>
             </div>
         </div>
         <br><br>
         <div class="content" style="text-align: justify;">
             <p style="display: flex; justify-content: space-between;"><strong>Quotation Ref No.
-                    SE-{{$quotation->id}}</strong>
+                    SE/{{$quotation->id}}/2023-24 (REVISED)</strong>
                 <strong>Date: {{ $quotation->date ?? 'N/A' }}</strong>
             </p>
 
@@ -160,7 +166,7 @@
                 <strong>From: SARTHAK
                     ENGINEERING</strong><br>
                 Khesra no. 69-19/3, Jhundpur,
-                <br> Sonepat, HR-131021
+                <br> Sonipat, HR-131021
             </p>
             <p><strong>Sub: Offer for {{$quotation->title}}.</strong></p>
             <strong>Dear Sir,</strong>
@@ -173,11 +179,11 @@
                 for periodic servicing of machine as well as repairing.</p>
             <p>Thank you for your valuable enquiry. It is our pleasure for offering you the following machines and
                 enclosing herewith our detailed quotations for the same along with our terms and conditions of sale.</p>
-            <p>So, we request you to find the attached quotation no. SE-{{$quotation->id}}.</p>
+            <p>So, we request you to find the attached quotation no. SE/{{$quotation->id}}/2023-24.</p>
         </div>
         <div class="footer">
             <strong>Sarthak Engineering</strong><br>
-            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India.<br>
+            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India.<br>
             <strong> Tel.</strong> +91 8814956109,<strong> E-Mail:</strong> sales@sarthakengineering.com<br>
             <strong>GST No. 06APPPK0166Q1Z4 PAN No.: APPPK0166Q</strong></p>
         </div>
@@ -188,18 +194,18 @@
             <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="width: 100px; height: auto;">
             <div style="margin-center: 50px;">
                 <h1>Sarthak Engineering</h1>
-                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</strong>
+                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India</strong>
             </div>
         </div>
-        <h2>Subject : Offer for {{$machine->machine_name}} {{$machine->model_no}}</h2>
+        <h2>SUBJECT : Offer for {{$machine->machine_name}} {{$machine->model_no}}</h2>
         <div class="content">
             <table>
                 <thead>
                     <tr>
                         <th>SN</th>
-                        <th>Part No</th>
-                        <th>Part Description</th>
-                        <th>Qty.</th>
+                        <th>PART NO.</th>
+                        <th>DESCRIPTION</th>
+                        <th>QTY</th>
                         <th>UNITS</th>
                         <th>PRICE IN {{$quotation->client->currency ?? 'RS.'}}</th>
                         <th>TOTAL PRICE</th>
@@ -218,7 +224,8 @@
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="6" class="text-right"><strong>Grand Total in {{$quotation->client->currency ?? 'RS.'}}</strong></td>
+                        <td colspan="6" class="text-right"><strong>TOTAL AMOUNT IN
+                                {{$quotation->client->currency ?? 'RS.'}}</strong></td>
                         <td><strong>{{ $quotation->grand_total }}</strong></td>
                     </tr>
                 </tbody>
@@ -226,7 +233,7 @@
         </div>
         <div class="footer">
             <strong>Sarthak Engineering</strong><br>
-            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India.<br>
+            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India.<br>
             <strong> Tel.</strong> +91 8814956109,<strong> E-Mail:</strong> sales@sarthakengineering.com<br>
             <strong>GST No. 06APPPK0166Q1Z4 PAN No.: APPPK0166Q</strong></p>
         </div>
@@ -237,7 +244,7 @@
             <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="width: 100px; height: auto;">
             <div style="margin-center: 50px;">
                 <h1>Sarthak Engineering</h1>
-                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</strong>
+                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India</strong>
             </div>
         </div>
         <div class="content" style="text-align: justify;">
@@ -254,19 +261,19 @@
             <p>GST 18%</p>
             <br>
             <p><strong>2. Payment Conditions</strong></p>
-            <p>The price shall be paid as follows:</p>
-            <p>50% advance against PO & balance 50% before dispatch of machines.</p>
+            <p>The price shall be paid as follows: </p>
+            <p>100% advance against PI before dispatch.</p>
             <br>
             <p><strong>3. Delivery Conditions</strong></p>
-            <p>Within 6-8 weeks from the date of confirmed order.</p>
+            <p>Within 1-2 weeks from the date of confirmed order.</p>
             <br>
             <p><strong>4. Validity of Quotation</strong></p>
-            <p>The offer will remain valid for 1 month.</p>
+            <p>The offer will be remained valid for 1 month.</p>
 
         </div>
         <div class="footer">
             <strong>Sarthak Engineering</strong><br>
-            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India.<br>
+            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India.<br>
             <strong> Tel.</strong> +91 8814956109,<strong> E-Mail:</strong> sales@sarthakengineering.com<br>
             <strong>GST No. 06APPPK0166Q1Z4 PAN No.: APPPK0166Q</strong></p>
         </div>
@@ -277,7 +284,7 @@
             <img src="{{ asset('images/logo.png') }}" alt="Company Logo" style="width: 100px; height: auto;">
             <div style="margin-center: 50px;">
                 <h1>Sarthak Engineering</h1>
-                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India</strong>
+                <strong>Works: Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India</strong>
             </div>
         </div>
         <br>
@@ -294,9 +301,9 @@
                     href="http://www.sarthakengineering.com">www.sarthakengineering.com</a></p>
             <table>
                 <tbody>
-                    <tr>
+                    <tr class="yellow">
                         <th>Bank Name</th>
-                        <td>YES BANK</td>
+                        <td>ICICI BANK</td>
                     </tr>
                     <tr>
                         <th>Name in Bank</th>
@@ -304,15 +311,19 @@
                     </tr>
                     <tr>
                         <th>Account No.</th>
-                        <td>10588460000222</td>
+                        <td>140505500532</td>
                     </tr>
                     <tr>
                         <th>Bank Branch</th>
-                        <td>VISHWAS NAGAR-110032</td>
+                        <td>KUNDLI, SONIPAT</td>
                     </tr>
                     <tr>
                         <th>IFSC Code</th>
-                        <td>YESB0001058</td>
+                        <td>ICIC0001405</td>
+                    </tr>
+                    <tr>
+                        <th>SWIFT Code</th>
+                        <td>ICICINBBCTS</td>
                     </tr>
                 </tbody>
             </table>
@@ -324,7 +335,7 @@
         </div>
         <div class="footer">
             <strong>Sarthak Engineering</strong><br>
-            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonepat -131021, (HR), India.<br>
+            <strong>Works:</strong> Khesra No.69-19/3, Jhundpur, Sonipat -131021, (HR), India.<br>
             <strong> Tel.</strong> +91 8814956109,<strong> E-Mail:</strong> sales@sarthakengineering.com<br>
             <strong>GST No. 06APPPK0166Q1Z4 PAN No.: APPPK0166Q</strong></p>
         </div>
@@ -369,8 +380,8 @@
                     .pageSize.getHeight() - 10);
             }
         }).save().then(() => {
-                document.querySelectorAll('.btn-container').forEach(btn => btn.style.display = 'block');
-            });
+            document.querySelectorAll('.btn-container').forEach(btn => btn.style.display = 'block');
+        });
     }
     </script>
 </body>
