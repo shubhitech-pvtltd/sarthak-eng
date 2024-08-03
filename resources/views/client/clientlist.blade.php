@@ -10,6 +10,7 @@
             </div>
             <div class="pull-right">
                 <a href="{{ url('/client/create')}}" class="btn btn-primary">Add Client</a>
+                <a href="{{ url('/client/bulkupload')}}" class="btn btn-primary">Bulk Upload</a>
             </div>
         </div>
         <div class="row">

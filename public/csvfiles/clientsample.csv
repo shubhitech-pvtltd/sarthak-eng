@@ -1,0 +1,2 @@
+owner_name,owner_email,owner_phone_no,owner_aadhar_no,company_name,company_email,company_phone_no,company_pan_no,company_gst_no,company_cin_no,country,company_address_1,company_address_2,state,city,pincode,currency,bank_branch_name,bank_name,account_no,ifsc_no
+Test,test@shubhitech.com,0,0,Bulk Test,test@gmail.com,0,0,0,0,IN,Demo,sonipat,HR,gurugram,0,INR,XYZABC,YES BANK,105884,XYX00XXQQ
