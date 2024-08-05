@@ -104,8 +104,8 @@
                                     <td>Null</td>
                                 </tr>
                                 <tr>
-                                    <td>country</td>
-                                    <td>No</td>
+                                    <td>country<span class="text-danger">*</span><br><strong>Values Accepted</strong> - IN , US</td>
+                                    <td>Yes</td>
                                     <td>String</td>
                                     <td>N/A</td>
                                 </tr>
@@ -140,8 +140,8 @@
                                     <td>N/A</td>
                                 </tr>
                                 <tr>
-                                    <td>currency</td>
-                                    <td>No</td>
+                                    <td>currency<span class="text-danger">*</span><br><strong>Values Accepted</strong> - USD,INR,EUR,RUB</td>
+                                    <td>Yes</td>
                                     <td>String</td>
                                     <td>N/A</td>
                                 </tr>

@@ -175,21 +175,34 @@ class ClientController extends Controller
         $count = count($data_array);
     
         for ($j = 0; $j < $count; $j++) {
-            $data = array_combine($column_name, $data_array[$j]);
-            $fullData = array_merge($data, ['created_by' => session('id'), 'updated_by' => session('id')]);
+            // Check if the current row has the same number of elements as the column names
+            if (count($data_array[$j]) === count($column_name)) {
 
-            $validator = Validator::make($fullData, [
-                'owner_name' => 'required',
-                'company_name' => 'required', 
-            ]);
-    
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator)->withInput();
+                $data_array[$j] = array_map(function($value) {
+                    return $value === '' ? null : $value;
+                }, $data_array[$j]);
+
+                $data = array_combine($column_name, $data_array[$j]);
+                $fullData = array_merge($data, ['created_by' => session('id'), 'updated_by' => session('id')]);
+        
+                $validator = Validator::make($fullData, [
+                    'owner_name' => 'required',
+                    'company_name' => 'required',
+                    'currency' => 'required|in:USD,INR,EUR,RUB',
+                    'country' => 'required|in:US,IN',
+                ]);
+        
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator)->withInput();
+                }
+        
+                $final_data[$j] = $fullData;
+            } else {
+                // Skip the row if it doesn't have the same number of elements as the column names
+                continue;
             }
-
-            $final_data[$j] = $fullData;
         }
-    
+        // return $final_data;
         DB::beginTransaction();
         try {
             foreach ($final_data as $value) {
