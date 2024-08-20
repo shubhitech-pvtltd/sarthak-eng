@@ -19,6 +19,8 @@ class Spare extends Model
         'hsn_code',
         'comment',
         'dimension',
+        'quantity',
+        'minimum_stock_alert',
         'created_by',
         'updated_by',
     ];
