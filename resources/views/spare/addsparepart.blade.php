@@ -107,7 +107,7 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-6">
-                        <label class="col-form-label fw-bold">Dimension</label>
+                        <label class="col-form-label fw-bold">Dimension/Size</label>
                         <input type="text" name="dimension" value="{{ isset($spare) ? $spare->dimension : '' }}"
                             class="form-control" id="dimension" placeholder="Enter Your Dimension">
                     </div>
@@ -204,10 +204,10 @@
 
 <script>
 $(document).ready(function() {
-    
+
     $('.js-example-basic-single1').select2();
 
-    
+
     $('#add_btn').click(function() {
         $('#addBuyerModal').modal('show');
     });
