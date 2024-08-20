@@ -37,6 +37,11 @@ Route::middleware(['CheckAuth'])->group(function(){
 
     Route::get('/client/data' , [ClientController::class,'getClients']);
 
+
+    Route::get('/client/bulkupload' , [ClientController::class,'getBulk']);
+
+    Route::post('/client/bulkupload/submit' , [ClientController::class,'storeBulk']);
+
     Route::resource('/client' , ClientController::class);
 
     Route::get('/machine/data' , [MachineController::class,'getMachines']);

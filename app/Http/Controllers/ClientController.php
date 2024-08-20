@@ -5,6 +5,8 @@ use App\Models\Client;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 class ClientController extends Controller
 {
    public function index(){
@@ -41,7 +43,6 @@ class ClientController extends Controller
         'owner_name' => 'required',
         'owner_email' => 'required',
         'owner_phone_no' => 'required',
-        'owner_aadhar_no' => '',
         'currency'=> 'required',
         'company_name' => 'required',
         'company_email' => 'required|email',
@@ -49,7 +50,7 @@ class ClientController extends Controller
         'country'=>'required',  
       ]);
       try{
-        DB::beginTransaction();
+            DB::beginTransaction();
             Client::create([
                             "owner_name" => $request->owner_name,
                             "owner_email" => $request->owner_email,
@@ -95,8 +96,6 @@ class ClientController extends Controller
        'owner_name' => 'required',
        'owner_email' => 'required',
        'owner_phone_no' => 'required',
-       'owner_aadhar_no' => '',
-       'currency'=>'',
        'company_name' => 'required',
        'company_email' => 'required|email',
        'company_phone_no' => 'required',
@@ -141,4 +140,81 @@ class ClientController extends Controller
     {
        $result = Client::destroy($id);
     }
+
+    public function getBulk(){
+        return view('client.clientbulk');
+    }
+    
+    public function storeBulk(Request $request)
+    {
+        $request->validate(['client_bulk_csv' => 'required|mimes:csv,txt',]
+                            ,['client_bulk_csv.mimes' => 'Oops ! Only CSV file acceptable',
+                              'client_bulk_csv.required' => 'Please Upload CSV File',
+                            ]);
+
+        $file = $request->file('client_bulk_csv');
+    
+    
+        $column_name = [];
+        $final_data = [];
+    
+        try {
+            $file_data = file_get_contents($file);
+        } catch (\Exception $e) {
+            Log::error($e);
+            return redirect()->back()->with('error', 'Error reading the file');
+        }
+    
+        $data_array = array_map("str_getcsv", explode("\n", $file_data));
+        $labels = array_shift($data_array);
+    
+        foreach ($labels as $label) {
+            $column_name[] = $label;
+        }
+    
+        $count = count($data_array);
+    
+        for ($j = 0; $j < $count; $j++) {
+            // Check if the current row has the same number of elements as the column names
+            if (count($data_array[$j]) === count($column_name)) {
+
+                $data_array[$j] = array_map(function($value) {
+                    return $value === '' ? null : $value;
+                }, $data_array[$j]);
+
+                $data = array_combine($column_name, $data_array[$j]);
+                $fullData = array_merge($data, ['created_by' => session('id'), 'updated_by' => session('id')]);
+        
+                $validator = Validator::make($fullData, [
+                    'owner_name' => 'required',
+                    'company_name' => 'required',
+                    'currency' => 'required|in:USD,INR,EUR,RUB',
+                    'country' => 'required|in:US,IN',
+                ]);
+        
+                if ($validator->fails()) {
+                    return redirect()->back()->withErrors($validator)->withInput();
+                }
+        
+                $final_data[$j] = $fullData;
+            } else {
+                // Skip the row if it doesn't have the same number of elements as the column names
+                continue;
+            }
+        }
+        // return $final_data;
+        DB::beginTransaction();
+        try {
+            foreach ($final_data as $value) {
+                Client::create($value);
+            }
+            DB::commit();
+            return redirect('/client')->with('success', 'Clients uploaded successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e);
+            return redirect()->back()->with('error', 'Error while bulk uploading the records');
+        }
+    }
+    
 }
