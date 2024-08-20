@@ -9,6 +9,11 @@ use App\Http\Controllers\MachineController;
 use App\Http\Controllers\SpareController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AvailablestockController;
+use App\Http\Controllers\IncomingstockController;
+use App\Http\Controllers\OutgoingstockController;
+use App\Http\Controllers\ReportsController;
 
 
 Route::get('/login',[LoginController::class,'login']);
@@ -17,20 +22,21 @@ Route::post('/login',[LoginController::class,'SubmitLogin']);
 
 Route::middleware(['CheckAuth'])->group(function(){
 
-    Route::view('/','pages.index');
+    Route::get('/', [HomeController::class, 'index']);
 
     Route::view('/forgot-password','login.forgot-password');
-    
+
     Route::get('/logout', function () {
         session()->flush();
         return redirect('/login');
     });
-    
+
     Route::view('/help','pages.help');
-    
+
     Route::resource('/user' , UserController::class);
-    
+
     Route::get('/client/data' , [ClientController::class,'getClients']);
+
 
     Route::get('/client/bulkupload' , [ClientController::class,'getBulk']);
 
@@ -51,15 +57,22 @@ Route::middleware(['CheckAuth'])->group(function(){
 
 
     Route::get('/quotation/data', [QuotationController::class, 'data'])->name('quotation.data');
+
     Route::resource('/quotation', QuotationController::class);
 
     Route::get('/buyer/data' , [BuyerController::class,'getBuyers']);
+
+    Route::post('/buyer/add', [BuyerController::class, 'addBuyer'])->name('buyer.add');
+
     Route::resource('/buyer' , BuyerController::class);
+
 
 });
 
 
 Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
+
+Route::get('/get-customerprice-details' , [CustomerWisePriceController::class ,'get_customerlist_details'])->name('get-customerprice-details');
 
 Route::get('/get-customerlist-details' , [QuotationController::class ,'get_customerlist_details'])->name('get-customerlist-details');
 
@@ -71,6 +84,27 @@ Route::get('/quotation/{id?}/view', [QuotationController::class, 'viewQuotation'
 
 Route::get('/quotation/{id}/pdf', [QuotationController::class, 'downloadPDF'])->name('quotation.pdf');
 
+Route::resource('/stockinventory/availablestock', AvailablestockController::class);
+
+Route::get('/availablestock/data', [AvailablestockController::class, 'getAvailablestocks']);
+Route::get('/availablestock/{id}/edit', [AvailablestockController::class, 'edit'])->name('availablestock.edit');
+Route::put('/availablestock/{id}', [AvailablestockController::class, 'update'])->name('availablestock.update');
+
+Route::get('/incomingstock/data', [IncomingstockController::class, 'getIncomingstocks']);
+Route::resource('/stockinventory/incomingstock', IncomingstockController::class);
+Route::post('/get-incoming-details', [IncomingstockController::class, 'getIncomingstockDetails'])->name('getIncomingstockDetails');
+// Route::get('/incomingstock/data' , [IncomingstockController::class, 'getIncomingstocks']);
+// Route::resource('/stockinventory/incomingstock', IncomingstockController::class);
+// Route::post('/get-incoming-details', [IncomingstockController::class, 'getIncomingstockDetails'])->name('getIncomingstockDetails');
+
+// Route::post('/incomingstock/get-details', [IncomingstockController::class, 'getMachineDetails'])->name('getDetails');
+
+Route::get('/outgoingstock/data' , [OutgoingstockController::class, 'getOutgoingstocks']);
+Route::resource('/stockinventory/outgoingstock', OutgoingstockController::class);
+
+
+
+// Route::get('/stockinventory/reports', [ReportsController::class, 'index']);
 
 // Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');
 
@@ -85,7 +119,7 @@ Route::get('/quotation/{id}/pdf', [QuotationController::class, 'downloadPDF'])->
 // resource controller meaning
 // GET         /user               index        show user list
 // GET         /user/create        create       add user page
-// POST        /user               store        add user post request 
+// POST        /user               store        add user post request
 // GET         /user/{id}          show         show specific user details
 // GET         /user/{id}/edit     edit         edit user page show
 // PUT/PATCH   /user/{id}          update       edit user hit request

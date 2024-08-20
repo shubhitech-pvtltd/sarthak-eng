@@ -2,6 +2,7 @@
 
 use App\Models\Buyer;
 
+
 function getRoleName($role_id){
    switch ($role_id){
         case "1":
@@ -11,7 +12,7 @@ function getRoleName($role_id){
             echo "Admin";
             break;
         case "3":
-            echo "Employee";        
+            echo "Employee";
             break;
         default:
             echo "Guest";
@@ -159,7 +160,7 @@ function getCurrency(){
         // 'ZWL' => 'Zimbabwean Dollar',
         // Add more currencies as needed
     ];
-    
+
 }
 
 function getCountry(){
@@ -364,4 +365,10 @@ function getCountry(){
 
 function getBuyersName(){
     return Buyer::select('buyer_name')->get();
+}
+
+function getRack_no(){
+    return  ['RACK F1',
+'RACK F2',
+'RACK F3'];
 }

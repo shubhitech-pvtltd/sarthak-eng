@@ -58,13 +58,17 @@ class CustomerWisePriceController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
-
     public function create()
     {
-        $machines = Machine::all()->sortBy('machine_name'); 
-        $clients = Client::all();
-        $parts = Spare::all();
-        return view('customerprice.customerpriceadd', compact('machines', 'clients', 'parts'));
+        $machines = Machine::select('id','machine_name', 'model_no')
+                    ->orderBy('machine_name')
+                    ->get();
+            
+        $clients = Client::select('id','company_name') 
+                    ->get();
+    
+    
+        return view('customerprice.customerpriceadd', compact('machines', 'clients'));
     }
 
     public function store(Request $request)
@@ -109,11 +113,16 @@ class CustomerWisePriceController extends Controller
     public function edit($id)
     {
         $customerprice = Customerprice::findOrFail($id);
-        $machines = Machine::all()->sortBy('machine_name');
-        $clients = Client::all();
-        $parts = Spare::all();
+        $machines = Machine::select('id','machine_name', 'model_no')
+        ->orderBy('machine_name')
+        ->get();
 
-        return view('customerprice.customerpriceedit', compact('customerprice', 'machines', 'clients', 'parts'));
+      $clients = Client::select('id','company_name') 
+        ->get();
+
+        $parts = Spare::where('machine_id',$customerprice->machine_id)->get();
+
+        return view('customerprice.customerpriceedit', compact('customerprice', 'machines', 'clients','parts'));
     }
 
     public function update(Request $request, $id)

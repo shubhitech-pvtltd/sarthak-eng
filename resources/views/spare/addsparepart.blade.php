@@ -17,7 +17,7 @@
     <div class="pd-20 bg-white border-radius-4 box-shadow">
         <div class="col-md-12">
             <form action="{{ isset($spare) ? url('/spare/' . $spare->id) : url('/spare') }}" method="post"
-                enctype="multipart/form-data">
+                enctype="multipart/form-data" name="spareForm">
 
                 <!-- CSRF Token -->
                 @csrf
@@ -30,7 +30,7 @@
                 <h5 class="text-primary">Machine Name</h5>
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
-                        <label class="col-form-label">Machine Name<span class="text-danger">*</span></label>
+                        <label class="col-form-label">Machine Name<span class="text-danger"></span></label>
                         <select class="js-example-basic-single1  form-control" name="machine_id">
                             <option value="">Select Machine</option>
                             @foreach($machines as $machine)
@@ -56,17 +56,23 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                <div class="col-sm-6 fw-bold">
+                    <div class="col-sm-5 fw-bold">
                         <label for="purchase_from" class="col-form-label">Purchase From</label>
                         <select class="js-example-basic-single1 form-control" name="purchase_from" id="purchase_from">
                             <option value="">Purchase From</option>
                             @foreach(getBuyersName() as $buyer)
-                            <option value="{{ $buyer->buyer_name }}" {{ isset($spare) && $spare->purchase_from == $buyer->buyer_name ? 'selected' : '' }}>
+                            <option value="{{ $buyer->buyer_name }}"
+                                {{ isset($spare) && $spare->purchase_from == $buyer->buyer_name ? 'selected' : '' }}>
                                 {{ $buyer->buyer_name }}
                             </option>
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="col-sm-1 d-flex align-items-end justify-content-end">
+                         <a class="btn btn-primary text-white" id="add_btn">Add <i class="fas fa-plus attractive"></i></a>
+                    </div>
+
                     <div class="col-sm-6 fw-bold">
                         <label for="buying_price" class="col-form-label">Buying Price<span
                                 class="text-danger">*</span></label>
@@ -101,39 +107,42 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-6">
-                        <label class="col-form-label fw-bold">Dimension</label>
+                        <label class="col-form-label fw-bold">Dimension/Size</label>
                         <input type="text" name="dimension" value="{{ isset($spare) ? $spare->dimension : '' }}"
                             class="form-control" id="dimension" placeholder="Enter Your Dimension">
                     </div>
                     <div class="col-sm-6">
                         <label class="col-form-label fw-bold">Drawing Upload</label>
                         @if(isset($spare) && !empty($spare->drawing_upload))
-                            <!-- Eye icon for triggering the modal -->
-                            <a href="#" data-toggle="modal" data-target="#drawingModal">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <div class="modal fade" id="drawingModal" tabindex="-1" role="dialog" aria-labelledby="drawingModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="drawingModalLabel">Drawing Image</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <img src="{{ asset('storage/images/upload/sparedrawing/' . $spare->drawing_upload) }}" alt="Drawing Image" class="img-fluid">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        </div>
+                        <!-- Eye icon for triggering the modal -->
+                        <a href="#" data-toggle="modal" data-target="#drawingModal">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <div class="modal fade" id="drawingModal" tabindex="-1" role="dialog"
+                            aria-labelledby="drawingModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="drawingModalLabel">Drawing Image</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ asset('storage/images/upload/sparedrawing/' . $spare->drawing_upload) }}"
+                                            alt="Drawing Image" class="img-fluid">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         @endif
                         <input type="file" name="drawing_upload"
                             value="{{ isset($spare) ? $spare->drawing_upload : '' }}" class="form-control"
-                            accept=".pdf,.jpg,.jpeg,.png">    
+                            accept=".pdf,.jpg,.jpeg,.png">
                     </div>
                 </div>
 
@@ -154,10 +163,55 @@
     </div>
 </div>
 
+<div class="modal fade" id="addBuyerModal" tabindex="-1" aria-labelledby="addBuyerModalLabel" aria-hidden="true">
+    <form action="{{ url('/buyer/add')}}"  method="post" name="buyerForm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBuyerModalLabel">Add New Buyer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    @csrf
+                    <div class="form-group row">
+                        <div class="col-sm-6 fw-bold">
+                            <label for="buyer_name" class="form-label">Buyer Name</label>
+                            <input type="text" class="form-control" id="buyer_name" name="buyer_name" required>
+                        </div>
+                        <div class="col-sm-6 fw-bold">
+                            <label for="buyer_email" class="form-label">Buyer Email</label>
+                            <input type="email" class="form-control" id="buyer_email" name="buyer_email" required>
+                        </div>
+                        <div class="col-sm-6 fw-bold">
+                            <label for="buyer_phone_no" class="form-label">Buyer Phone</label>
+                            <input type="text" class="form-control" id="buyer_phone_no" name="buyer_phone_no" required>
+                        </div>
+                        <div class="col-sm-6 fw-bold">
+                            <label for="buyer_address" class="form-label">Buyer Address</label>
+                            <input type="text" class="form-control" id="buyer_address" name="buyer_address" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="display: flex; justify-content: center;">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
 
 <script>
 $(document).ready(function() {
+
     $('.js-example-basic-single1').select2();
+
+
+    $('#add_btn').click(function() {
+        $('#addBuyerModal').modal('show');
+    });
+
 });
 </script>
 

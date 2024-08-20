@@ -33,7 +33,7 @@ class SpareController extends Controller
             'spares.dimension',
             'machines.machine_name'
         ])
-        ->join('machines', 'spares.machine_id', '=', 'machines.id')
+        ->leftJoin('machines', 'spares.machine_id', '=', 'machines.id')
         ->orderBy('machines.machine_name', 'asc')
         ->get();
 
@@ -50,20 +50,26 @@ class SpareController extends Controller
                         </div>
                     </div>';
             })
+            ->editColumn('machines.machine_name', function ($spare) {
+                return $spare->machine_name ?? 'N/A';
+            })
             ->rawColumns(['action'])
             ->make(true);
     }
 
+
     public function create()
-    {
-        $machines = Machine::all()->sortBy('machine_name'); 
-        return view('spare.addsparepart', compact('machines'));
-    }
+{
+    $machines = Machine::select('id', 'machine_name', 'model_no')->orderBy('machine_name')->orderBy('model_no')->get();
+    
+    return view('spare.addsparepart', compact('machines'));
+}
+
 
     public function store(Request $request)
     {
         $request->validate([
-            'machine_id' => 'required',
+            'machine_id' => 'nullable|exists:machines,id',
             'part_no' => 'required',
             'description' => 'required',
             'purchase_from' => 'required',
@@ -121,14 +127,15 @@ class SpareController extends Controller
 
     public function edit(Spare $spare)
     {
-        $machines = Machine::all()->sortBy('machine_name'); 
+        $machines = Machine::select('id', 'machine_name', 'model_no')->orderBy('machine_name')->orderBy('model_no')->get();
+
         return view('spare.addsparepart', compact('machines', 'spare'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'machine_id' => 'required',
+            'machine_id' => 'nullable|exists:machines,id',
             'part_no' => 'required',
             'description' => 'required',
             'purchase_from' => 'required',

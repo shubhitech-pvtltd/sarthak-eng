@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Quotation extends Model
 {
     use HasFactory;
+    
+    protected $table = 'quotations';
 
     protected $fillable = [
         'customer_id', 

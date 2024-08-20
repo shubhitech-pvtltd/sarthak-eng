@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 01, 2024 at 09:38 AM
+-- Generation Time: Aug 09, 2024 at 06:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,8 +18,35 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sarthak-eng`
+-- Database: `sarthak`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `availablestocks`
+--
+
+CREATE TABLE `availablestocks` (
+  `id` int(11) NOT NULL,
+  `date` date DEFAULT NULL,
+  `part_id` varchar(200) DEFAULT NULL,
+  `machine_id` varchar(200) DEFAULT NULL,
+  `unit` varchar(200) DEFAULT NULL,
+  `available_qty` varchar(200) DEFAULT NULL,
+  `discription` varchar(200) DEFAULT NULL,
+  `created_by` int(10) DEFAULT NULL,
+  `updated_by` int(10) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `availablestocks`
+--
+
+INSERT INTO `availablestocks` (`id`, `date`, `part_id`, `machine_id`, `unit`, `available_qty`, `discription`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, NULL, '5', '4', '5', '4', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -124,6 +151,49 @@ INSERT INTO `customerprices` (`id`, `machine_id`, `part_id`, `customer_id`, `pri
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `incomingstocks`
+--
+
+CREATE TABLE `incomingstocks` (
+  `id` int(11) NOT NULL,
+  `part_id` varchar(200) DEFAULT NULL,
+  `machine_id` varchar(200) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `rack_no` varchar(200) DEFAULT NULL,
+  `carrot_no` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `dwg_no` varchar(200) DEFAULT NULL,
+  `quantity` varchar(200) DEFAULT NULL,
+  `unit` varchar(200) DEFAULT NULL,
+  `incoming` varchar(200) DEFAULT NULL,
+  `stock_in_hand` varchar(200) DEFAULT NULL,
+  `minimum_stock_alert` varchar(200) DEFAULT NULL,
+  `purchasing_price` varchar(200) DEFAULT NULL,
+  `total_purchasing` varchar(200) DEFAULT NULL,
+  `selling_price` varchar(200) DEFAULT NULL,
+  `total_selling_price` varchar(200) DEFAULT NULL,
+  `export_selling_price` varchar(200) DEFAULT NULL,
+  `gea_selling_price` varchar(200) DEFAULT NULL,
+  `size` varchar(200) DEFAULT NULL,
+  `created_by` int(10) DEFAULT NULL,
+  `updated_by` int(10) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `incomingstocks`
+--
+
+INSERT INTO `incomingstocks` (`id`, `part_id`, `machine_id`, `date`, `rack_no`, `carrot_no`, `description`, `dwg_no`, `quantity`, `unit`, `incoming`, `stock_in_hand`, `minimum_stock_alert`, `purchasing_price`, `total_purchasing`, `selling_price`, `total_selling_price`, `export_selling_price`, `gea_selling_price`, `size`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, '1', '1', '2024-08-08', 'RACK F2', 'd4', 'f4', NULL, '10', 'SET', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 33, 33, '2024-08-07 07:48:27', '2024-08-07 07:48:27'),
+(2, '1', '1', '2024-08-08', 'RACK F1', 'd4', 'f4', '5', '4', 'hrhjerhjre', '4', 'e4', 'r4', '4', 't', NULL, 'y', 't', 'h', NULL, 33, 33, '2024-08-07 08:45:48', '2024-08-07 08:45:48'),
+(3, '1', '1', '2024-08-09', 'RACK F2', 'd4', 'f4', '5', '4', '55', '4', NULL, 'r4', '4', 't', '3434', 'y', 't', 'h', NULL, 33, 33, '2024-08-07 23:29:07', '2024-08-07 23:29:07'),
+(4, '1', '1', '2024-08-08', 'RACK F2', 'd4', 'f4', '5', '4', '55', '4', 'e4', 'r4', '4', 't', NULL, 'y', 'uy87', NULL, NULL, 33, 33, '2024-08-08 06:43:37', '2024-08-08 06:43:37');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `machines`
 --
 
@@ -156,6 +226,48 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `outgoingstocks`
+--
+
+CREATE TABLE `outgoingstocks` (
+  `id` int(11) NOT NULL,
+  `part_id` varchar(200) DEFAULT NULL,
+  `machine_id` varchar(200) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `rack_no` varchar(200) DEFAULT NULL,
+  `carrot_no` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `dwg_no` varchar(200) DEFAULT NULL,
+  `quantity` varchar(200) DEFAULT NULL,
+  `unit` varchar(200) DEFAULT NULL,
+  `outgoingstock` varchar(200) DEFAULT NULL,
+  `stock_in_hand` varchar(200) DEFAULT NULL,
+  `minimum_stock_alert` varchar(200) DEFAULT NULL,
+  `purchasing_price` varchar(200) DEFAULT NULL,
+  `total_purchasing` varchar(200) DEFAULT NULL,
+  `selling_price` varchar(200) DEFAULT NULL,
+  `total_selling_price` varchar(200) DEFAULT NULL,
+  `export_selling_price` varchar(200) DEFAULT NULL,
+  `gea_selling_price` varchar(200) DEFAULT NULL,
+  `size` varchar(200) DEFAULT NULL,
+  `created_by` int(10) DEFAULT NULL,
+  `updated_by` int(10) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `outgoingstocks`
+--
+
+INSERT INTO `outgoingstocks` (`id`, `part_id`, `machine_id`, `date`, `rack_no`, `carrot_no`, `description`, `dwg_no`, `quantity`, `unit`, `outgoingstock`, `stock_in_hand`, `minimum_stock_alert`, `purchasing_price`, `total_purchasing`, `selling_price`, `total_selling_price`, `export_selling_price`, `gea_selling_price`, `size`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, '1', '1', '2024-08-08', 'RACK F1', 'd4', NULL, '5', '4', '55', NULL, NULL, 'r4', '4', 't', NULL, NULL, NULL, NULL, NULL, 33, 33, '2024-08-08 02:41:03', '2024-08-08 02:41:03'),
+(2, '1', '1', '2024-08-08', 'RACK F1', 'd4', 'f4', '5', '4', '55', NULL, 'e4', 'r4', '4', 't', 't', 'y', 't', '89999', NULL, 33, 33, '2024-08-08 03:03:42', '2024-08-08 03:03:42'),
+(4, '1', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 33, 33, '2024-08-08 07:08:25', '2024-08-08 07:08:25');
 
 -- --------------------------------------------------------
 
@@ -244,7 +356,7 @@ CREATE TABLE `spares` (
 --
 
 INSERT INTO `spares` (`id`, `machine_id`, `part_no`, `description`, `purchase_from`, `buying_price`, `selling_price`, `drawing_upload`, `gea_selling_price`, `unit`, `hsn_code`, `comment`, `dimension`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '8134-2100-270', 'Solenoid Water Assembly', 'ShubhiTech', '0000', '0000', 'Spare_stfSbtqYI9CNiRaOLEJRSBHr4Ycdt0.jpeg', '000', 'SET', '00000', 'solenoidtt', '000', 33, 33, '2024-07-01 02:01:24', '2024-07-01 02:01:24');
+(1, '1', '8134-2100-270', 'Solenoid Water Assembly', 'ShubhiTech', '200', '300', 'Spare_stfSbtqYI9CNiRaOLEJRSBHr4Ycdt0.jpeg', '250', 'SET', '00000', 'solenoidtt', '000', 33, 33, '2024-07-01 02:01:24', '2024-08-08 11:53:08');
 
 -- --------------------------------------------------------
 
@@ -287,6 +399,12 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `role
 --
 
 --
+-- Indexes for table `availablestocks`
+--
+ALTER TABLE `availablestocks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `buyers`
 --
 ALTER TABLE `buyers`
@@ -305,6 +423,12 @@ ALTER TABLE `customerprices`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `incomingstocks`
+--
+ALTER TABLE `incomingstocks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `machines`
 --
 ALTER TABLE `machines`
@@ -314,6 +438,12 @@ ALTER TABLE `machines`
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `outgoingstocks`
+--
+ALTER TABLE `outgoingstocks`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -345,6 +475,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `availablestocks`
+--
+ALTER TABLE `availablestocks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `buyers`
 --
 ALTER TABLE `buyers`
@@ -363,6 +499,12 @@ ALTER TABLE `customerprices`
   MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `incomingstocks`
+--
+ALTER TABLE `incomingstocks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `machines`
 --
 ALTER TABLE `machines`
@@ -375,6 +517,12 @@ ALTER TABLE `migrations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `outgoingstocks`
+--
+ALTER TABLE `outgoingstocks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `quotationlists`
 --
 ALTER TABLE `quotationlists`
@@ -384,7 +532,7 @@ ALTER TABLE `quotationlists`
 -- AUTO_INCREMENT for table `quotations`
 --
 ALTER TABLE `quotations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `spares`
