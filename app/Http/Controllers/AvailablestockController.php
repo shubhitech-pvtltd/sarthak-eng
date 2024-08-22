@@ -19,68 +19,63 @@ class AvailablestockController extends Controller
         return view('stockinventory.availablestocklist', compact('machines', 'spares'));
     }
 
-    public function getAvailablestocks()
-    {
-        try {
-            $availablestocks = Availablestock::select([
+    public function getAvailablestocks(Request $request)
+{
+    try {
+        $query = Availablestock::select([
                 'availablestocks.id',
                 'availablestocks.created_at',
                 'spares.part_no',
-                'availablestocks.discription',
                 'spares.minimum_stock_alert',
-                'spares.quantity',
-                'spares.part_no',
+                'availablestocks.quantity',
                 'machines.model_no as machine_model',
             ])
             ->join('spares', 'availablestocks.part_id', '=', 'spares.id')
-            ->join('machines', 'spares.machine_id', '=', 'machines.id');
+            ->join('machines', 'availablestocks.machine_id', '=', 'machines.id');
 
-
-            return DataTables::of($availablestocks)
-                ->addColumn('action', function ($availablestock) {
-                    return '
-                        <div class="dropdown">
-
-                        </div>';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        } catch (\Exception $e) {
-            Log::error('Error fetching available stocks: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred while fetching data.'], 500);
+        // Apply filters
+        if ($request->has('machine_id') && $request->machine_id) {
+            $query->where('machines.id', $request->machine_id);
         }
+
+        if ($request->has('part_id') && $request->part_id) {
+            $query->where('spares.id', $request->part_id);
+        }
+
+        return DataTables::of($query)
+            ->addColumn('action', function ($availablestock) {
+                return '<button class="btn btn-sm btn-primary edit-alert" data-id="' . $availablestock->id . '">Edit</button>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    } catch (\Exception $e) {
+        Log::error('Error fetching available stocks: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred while fetching data.'], 500);
     }
-
-public function getData(Request $request)
-{
-    $query = Availablestock::query();
-
-    if ($request->has('machine_id') && $request->machine_id) {
-        $query->where('machine_id', $request->machine_id);
-    }
-
-    if ($request->has('part_id') && $request->part_id) {
-        $query->where('part_id', $request->part_id);
-    }
-
-    return datatables()->of($query)->make(true);
 }
 
-public function updateStockAlert(Request $request, $id)
+
+public function update($id, Request $request)
 {
-    $request->validate([
-        'minimum_stock_alert' => 'required|integer'
-    ]);
+    $minStockAlert = $request->input('minimum_stock_alert');
+    $availablestock = Availablestock::find($id);
 
-    $stock = Availablestock::find($id);
-    if ($stock) {
-        $stock->minimum_stock_alert = $request->input('minimum_stock_alert');
-        $stock->save();
-        return response()->json(['success' => true]);
+    if ($availablestock) {
+        $availablestock->minimum_stock_alert = $minStockAlert;
+        $availablestock->save();
+
+        $spare = Spare::find($availablestock->part_id);
+        if ($spare) {
+            $spare->minimum_stock_alert = $minStockAlert;
+            $spare->save();
+
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Spare part not found'], 404);
+        }
+    } else {
+        return response()->json(['success' => false, 'message' => 'Stock not found'], 404);
     }
-
-    return response()->json(['success' => false], 404);
 }
-
 
 }

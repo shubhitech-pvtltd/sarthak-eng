@@ -22,7 +22,6 @@ class Outgoingstock extends Model
         'dimension',
         'outgoing',
         'stock_in_hand',
-        'minimum_stock_alert',
         'purchasing_price',
         'total_purchasing',
         'selling_price',
@@ -44,4 +43,5 @@ class Outgoingstock extends Model
     {
         return $this->belongsTo(Spare::class, 'part_id');
     }
+
 }

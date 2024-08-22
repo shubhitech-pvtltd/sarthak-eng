@@ -104,7 +104,7 @@
 
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Outgoing<span class="text-danger">*</span></label>
-                        <input type="text" name="outgoingstock" value="{{ old('outgoingstock', $outgoingstock->outgoingstock) }}" class="form-control" placeholder="Enter outgoing">
+                        <input type="text" name="outgoing" value="{{ old('outgoing', $outgoingstock->outgoing) }}" class="form-control" placeholder="Enter outgoing">
                     </div>
                 </div>
 
@@ -116,7 +116,7 @@
 
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Minimum Stock Alert<span class="text-danger">*</span></label>
-                        <input type="text" name="minimum_stock_alert" value="{{ old('minimum_stock_alert', $outgoingstock->minimum_stock_alert) }}" class="form-control" placeholder="Enter Minimum Stock Alert">
+                        <input type="text" name="minimum_stock_alert" value="{{ old('minimum_stock_alert', $outgoingstock->minimum_stock_alert) }}" class="form-control" readonly>
                     </div>
                 </div>
 

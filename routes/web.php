@@ -81,25 +81,31 @@ Route::get('/quotation/{id}/pdf', [QuotationController::class, 'downloadPDF'])->
 
 Route::resource('/stockinventory/availablestock', AvailablestockController::class);
 
-Route::get('/availablestock/data', [AvailablestockController::class, 'getAvailablestocks']);
+Route::get('/availablestock/data', [AvailablestockController::class, 'getAvailablestocks'])->name('availablestock.data');
 Route::get('/availablestock/{id}/edit', [AvailablestockController::class, 'edit'])->name('availablestock.edit');
 Route::put('/availablestock/{id}', [AvailablestockController::class, 'update'])->name('availablestock.update');
+
 
 Route::get('/incomingstock/data', [IncomingstockController::class, 'getIncomingstocks']);
 Route::resource('/stockinventory/incomingstock', IncomingstockController::class);
 Route::post('/get-incoming-details', [IncomingstockController::class, 'getIncomingstockDetails'])->name('getIncomingstockDetails');
-// Route::get('/incomingstock/data' , [IncomingstockController::class, 'getIncomingstocks']);
-// Route::resource('/stockinventory/incomingstock', IncomingstockController::class);
-// Route::post('/get-incoming-details', [IncomingstockController::class, 'getIncomingstockDetails'])->name('getIncomingstockDetails');
-
-// Route::post('/incomingstock/get-details', [IncomingstockController::class, 'getMachineDetails'])->name('getDetails');
 
 Route::get('/outgoingstock/data' , [OutgoingstockController::class, 'getOutgoingstocks']);
 Route::resource('/stockinventory/outgoingstock', OutgoingstockController::class);
 
+Route::get('/incomingstock/data', [IncomingstockController::class, 'getIncomingstocks'])->name('incomingstock.data');
+
+Route::get('/stockinventory/reports', [ReportsController::class, 'index']);
+Route::resource('/stockinventory/reports',ReportsController::class);
+
+Route::post('/availablestock/update-alert/{id}', [AvailablestockController::class, 'update'])->name('availablestock.update');
+
+Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+Route::get('/report/data', [ReportsController::class, 'getReportData'])->name('report.data');
 
 
-// Route::get('/stockinventory/reports', [ReportsController::class, 'index']);
+
+
 
 // Route::post('/machines', [MachineController::class, 'store'])->name('machines.store');
 

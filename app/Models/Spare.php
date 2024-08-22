@@ -24,4 +24,14 @@ class Spare extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function incomingStocks()
+    {
+        return $this->hasMany(Incomingstock::class, 'part_id');
+    }
+
+    public function outgoingStocks()
+    {
+        return $this->hasMany(Outgoingstock::class, 'part_id');
+    }
 }

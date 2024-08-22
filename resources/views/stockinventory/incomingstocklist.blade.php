@@ -61,40 +61,38 @@
 
 
 <script>
-    $('.data-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: "{!! url('/incomingstock/data') !!}",
-        columns: [
-            { data: 'date', name: 'date' },
-            { data: 'rack_no', name: 'rack_no' },
-            { data: 'part_no', name: 'part_no' },
-            { data: 'machine_model', name: 'machine_model' },
-            { data: 'carrot_no', name: 'carrot_no' },
-            { data: 'unit', name: 'unit' },
-            { data: 'incoming', name: 'incoming' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
-        ],
-        "language": {
-            "info": "_START_ to _END_ of _TOTAL_ entries",
-            searchPlaceholder: "Search"
-        },
-        "rowCallback": function(row, data, index) {
-            if (data.incoming <= 5) {
-                $(row).find('td:eq(6)').addClass('low-incoming');
-            } else {
-                $(row).find('td:eq(6)').removeClass('low-incoming');
-            }
-        }
-    });
-</script>
+   $('#machine_id, #part_id').change(function () {
+    $('.data-table').DataTable().ajax.reload();
+});
 
-<style>
-.low-incoming {
-    background-color: red !important;
-    color: white;
-}
-</style>
+$('.data-table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: "{!! url('/incomingstock/data') !!}",
+        data: function (d) {
+            d.machine_id = $('#machine_id').val();
+            d.part_id = $('#part_id').val();
+        }
+    },
+    columns: [
+        { data: 'date', name: 'date' },
+        { data: 'rack_no', name: 'rack_no' },
+        { data: 'part_no', name: 'part_no' },
+        { data: 'machine_model', name: 'machine_model' },
+        { data: 'carrot_no', name: 'carrot_no' },
+        { data: 'unit', name: 'unit' },
+        { data: 'incoming', name: 'incoming' },
+        { data: 'action', name: 'action', orderable: false, searchable: false }
+    ],
+    "language": {
+        "info": "_START_ to _END_ of _TOTAL_ entries",
+        searchPlaceholder: "Search"
+    },
+
+});
+
+</script>
 
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/sweetalert2/sweetalert2.css') }}">
