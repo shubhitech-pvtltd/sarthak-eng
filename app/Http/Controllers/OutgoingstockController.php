@@ -20,9 +20,9 @@ class OutgoingstockController extends Controller
         return view('stockinventory.outgoingstocklist', compact('machines', 'spares'));
     }
 
-    public function getOutgoingstocks()
+    public function getOutgoingstocks(Request $request)
     {
-        $outgoingstocks = Outgoingstock::select([
+        $query = Outgoingstock::select([
             'outgoingstocks.id',
             'outgoingstocks.date',
             'outgoingstocks.rack_no',
@@ -38,7 +38,15 @@ class OutgoingstockController extends Controller
         ->join('spares', 'outgoingstocks.part_id', '=', 'spares.id')
         ->join('machines', 'spares.machine_id', '=', 'machines.id');
 
-        return DataTables::of($outgoingstocks)
+        // Apply filters based on the request inputs
+        if ($request->machine_id) {
+            $query->where('machines.id', $request->machine_id);
+        }
+        if ($request->part_id) {
+            $query->where('spares.id', $request->part_id);
+        }
+
+        return DataTables::of($query)
             ->addColumn('action', function ($outgoingstock) {
                 return '
                     <div class="dropdown">
@@ -53,12 +61,10 @@ class OutgoingstockController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-    }
-
-    public function getOutgoingstockDetails(Request $request)
+    }    public function getOutgoingstockDetails(Request $request)
     {
         $machineId = $request->input('machineId');
-        $parts = Spare::select('id','part_no','description','buying_price','unit','gea_selling_price','selling_price','dimension','minimum_stock_alert','quantity')->where('machine_id', $machineId)->get();
+        $parts = Spare::select('id','part_no','description','buying_price','unit','gea_selling_price','selling_price','dimension','quantity')->where('machine_id', $machineId)->get();
         return response()->json($parts);
     }
 
@@ -73,30 +79,35 @@ class OutgoingstockController extends Controller
     {
         Log::info('Request Data:', $request->all());
 
+        $availablestock = Availablestock::where('machine_id', $request->machine_id)
+            ->where('part_id', $request->part_id)
+            ->first();
+
+        if ($availablestock) {
+            Log::info('Available stock found: ' . $availablestock->quantity);
+            $quantity = $availablestock->quantity;
+        } else {
+            Log::warning('No available stock found for the given machine_id and part_id.');
+            $quantity = 0;
+        }
         $request->validate([
-            // 'date' => 'required|date',
-            // 'rack_no' => 'required|string',
-            // 'carrot_no' => 'required|string',
-            // 'description' => 'required|string',
-            // 'machine_id' => 'required|exists:machines,id',
-            // 'part_id' => 'required|exists:spares,id',
-            // 'dwg_no' => 'required|string',
-            // 'quantity' => 'required|numeric|min:0',
-            // 'unit' => 'required|string',
-            // 'outgoing' => 'required|numeric|min:0',
-            // 'stock_in_hand' => 'required|numeric|min:0',
-            // 'minimum_stock_alert' => 'required|numeric|min:0',
-            // 'purchasing_price' => 'required|numeric|min:0',
-            // 'total_purchasing' => 'required|numeric|min:0',
-            // 'selling_price' => 'required|numeric|min:0',
-            // 'total_selling_price' => 'required|numeric|min:0',
-            // 'export_selling_price' => 'required|numeric|min:0',
-            // 'gea_selling_price' => 'required|numeric|min:0',
+            'outgoing' => [
+                'required',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($quantity) {
+                    if ($value > $quantity) {
+                        $fail('The outgoing quantity cannot exceed the available stock.');
+                    }
+                },
+            ],
         ]);
 
         try {
             DB::beginTransaction();
-            $stock_in_hand = $request->stock_in_hand - $request->outgoing;
+
+            $stock_in_hand = $quantity - $request->outgoing;
+
             $outgoingstock = Outgoingstock::create([
                 'date' => $request->date,
                 'rack_no' => $request->rack_no,
@@ -107,9 +118,9 @@ class OutgoingstockController extends Controller
                 'dwg_no' => $request->dwg_no,
                 'quantity' => $request->quantity,
                 'unit' => $request->unit,
+                'dimension' => $request->dimension,
                 'outgoing' => $request->outgoing,
                 'stock_in_hand' => $stock_in_hand,
-                'minimum_stock_alert' => $request->minimum_stock_alert,
                 'purchasing_price' => $request->purchasing_price,
                 'total_purchasing' => $request->total_purchasing,
                 'selling_price' => $request->selling_price,
@@ -120,22 +131,16 @@ class OutgoingstockController extends Controller
                 "updated_by" => session('id')
             ]);
 
-            $availablestock = Availablestock::where('machine_id', $request->machine_id)
-                ->where('part_id', $request->part_id)
-                ->first();
-
             if ($availablestock) {
                 $availablestock->update([
-                    'quantity' => $availablestock->quantity - $request->outgoing,
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
+                    'quantity' => $stock_in_hand,
                 ]);
             } else {
                 Availablestock::create([
                     'machine_id' => $request->machine_id,
                     'part_id' => $request->part_id,
                     'quantity' => $request->quantity - $request->outgoing,
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
-                   "created_by" => session('id'),
+                    "created_by" => session('id'),
                     "updated_by" => session('id')
                 ]);
             }
@@ -143,7 +148,6 @@ class OutgoingstockController extends Controller
             $spare = Spare::find($request->part_id);
             $spare->update([
                 'quantity' => $spare->quantity - $request->outgoing,
-                'minimum_stock_alert' => $request->minimum_stock_alert,
             ]);
 
             DB::commit();
@@ -154,6 +158,7 @@ class OutgoingstockController extends Controller
             return redirect()->back()->with('error', 'Error while adding the record: ' . $e->getMessage())->withInput();
         }
     }
+
     public function edit($id)
     {
         $outgoingstock = Outgoingstock::findOrFail($id);
@@ -162,9 +167,6 @@ class OutgoingstockController extends Controller
 
         return view('stockinventory.outgoingstockedit', compact('outgoingstock', 'machines', 'spares'));
     }
-
-
-
     public function update(Request $request, $id)
     {
         Log::info('Request Data:', $request->all());
@@ -205,9 +207,9 @@ class OutgoingstockController extends Controller
                 'dwg_no' => $request->dwg_no,
                 'quantity' => $request->quantity,
                 'unit' => $request->unit,
+                'dimension' => $request->dimension,
                 'outgoing' => $request->outgoing,
                 'stock_in_hand' => $stock_in_hand,
-                'minimum_stock_alert' => $request->minimum_stock_alert,
                 'purchasing_price' => $request->purchasing_price,
                 'total_purchasing' => $request->total_purchasing,
                 'selling_price' => $request->selling_price,
@@ -224,14 +226,12 @@ class OutgoingstockController extends Controller
             if ($availablestock) {
                 $availablestock->update([
                     'quantity' => $availablestock->quantity - $request->outgoing + ($outgoingstock->quantity - $request->quantity),
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
                 ]);
             } else {
                 Availablestock::create([
                     'machine_id' => $request->machine_id,
                     'part_id' => $request->part_id,
                     'quantity' => $request->quantity - $request->outgoing,
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
                     "created_by" => session('id'),
                     "updated_by" => session('id')
                 ]);
@@ -240,7 +240,6 @@ class OutgoingstockController extends Controller
             $spare = Spare::find($request->part_id);
             $spare->update([
                 'quantity' => $spare->quantity - $request->outgoing + ($outgoingstock->quantity - $request->quantity),
-                'minimum_stock_alert' => $request->minimum_stock_alert,
             ]);
 
             DB::commit();

@@ -97,11 +97,12 @@
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Stock In Hand<span class="text-danger">*</span></label>
-                        <input type="number" id="stock_in_hand" name="stock_in_hand" value="" class="form-control" readonly>                    </div>
+                        <input type="number" id="stock_in_hand" name="stock_in_hand" value="" class="form-control" readonly>
+                    </div>
 
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Minimum Stock Alert<span class="text-danger">*</span></label>
-                        <input type="text" name="minimum_stock_alert" value="" class="form-control minimum_stock_alert" placeholder="Enter Minimum Stock Alert" disabled>
+                        <input type="text" name="minimum_stock_alert"  id="minimum_stock_alert" value="" class="form-control minimum_stock_alert" disabled>
                     </div>
                 </div>
 

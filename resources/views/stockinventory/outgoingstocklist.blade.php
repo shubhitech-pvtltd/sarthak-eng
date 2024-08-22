@@ -58,10 +58,17 @@
 </div>
 
 <script>
-    $('.data-table').DataTable({
+   $(document).ready(function() {
+    var table = $('.data-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{!! url('/outgoingstock/data') !!}",
+        ajax: {
+            url: "{!! url('/outgoingstock/data') !!}",
+            data: function(d) {
+                d.machine_id = $('#machine_id').val();
+                d.part_id = $('#part_id').val();
+            }
+        },
         columns: [
             { data: 'date', name: 'date' },
             { data: 'rack_no', name: 'rack_no' },
@@ -76,22 +83,15 @@
             "info": "_START_ to _END_ of _TOTAL_ entries",
             searchPlaceholder: "Search"
         },
-        "rowCallback": function(row, data, index) {
-            if (data.incoming <= 5) {
-                $(row).find('td:eq(6)').addClass('low-outgoing');
-            } else {
-                $(row).find('td:eq(6)').removeClass('low-outgoing');
-            }
-        }
-    });
-</script>
 
-<style>
-.low-outgoing {
-    background-color: red !important;
-    color: white;
-}
-</style>
+    });
+
+    $('#machine_id, #part_id').on('change', function() {
+        table.draw();
+    });
+});
+
+</script>
 
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('vendor/sweetalert2/sweetalert2.css') }}">

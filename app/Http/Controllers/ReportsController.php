@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Machine;
-use App\Models\Spare;
 use App\Models\Incomingstock;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\Outgoingstock;
+use App\Models\Spare;
+use App\Models\Machine;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
@@ -16,226 +16,125 @@ class ReportsController extends Controller
     {
         $machines = Machine::all();
         $spares = Spare::all();
+
         return view('stockinventory.reports', compact('machines', 'spares'));
     }
 
-    public function viewReport()
-{
-    $incomingstocks = Incomingstock::select([
-        'incomingstocks.id',
-        'incomingstocks.date',
-        'incomingstocks.rack_no',
-        'incomingstocks.carrot_no',
-        'incomingstocks.description',
-        'incomingstocks.quantity',
-        'incomingstocks.unit',
-        'spares.part_no',
-        'incomingstocks.stock_in_hand',
-        'machines.model_no as machine_model',
-    ])
-    ->join('spares', 'incomingstocks.part_id', '=', 'spares.id')
-    ->join('machines', 'spares.machine_id', '=', 'machines.id');
-
-    return DataTables::of($incomingstocks)
-        ->addColumn('action', function ($incomingstock) {
-            return '
-                <div class="dropdown">
-                    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                        <i class="fa fa-ellipsis-h"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="'.url('/stockinventory/incomingstock/'.$incomingstock->id.'/edit').'"><i class="fa fa-pencil"></i> Edit</a>
-                        <a class="dropdown-item deleteBtn" data-url="'.url('/stockinventory/incomingstock/'.$incomingstock->id).'"><i class="fa fa-trash"></i> Delete</a>
-                    </div>
-                </div>';
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
-public function getData(Request $request)
-{
-    $query = IncomingStock::query();
-
-    if ($request->has('machine_id') && $request->machine_id) {
-        $query->where('machine_id', $request->machine_id);
-    }
-
-    if ($request->has('part_id') && $request->part_id) {
-        $query->where('part_id', $request->part_id);
-    }
-
-    return datatables()->of($query)->make(true);
-}
-
-  public function getIncomingstockDetails(Request $request)
+    public function getReportData(Request $request)
     {
-        $machineId = $request->input('machineId');
-        $parts = Spare::select('id','part_no','description','buying_price','unit','gea_selling_price','selling_price','dimension')->where('machine_id', $machineId)->get();
+        $incomingQuery = DB::table('incomingstocks')
+            ->join('spares', 'incomingstocks.part_id', '=', 'spares.id')
+            ->join('machines', 'incomingstocks.machine_id', '=', 'machines.id')
+            ->select(
+                'spares.part_no as part_no',
+                'machines.model_no as machine_model',
+                'incomingstocks.incoming as incoming',
+                DB::raw('NULL as outgoing'),
+                'incomingstocks.quantity as quantity',
+                'spares.minimum_stock_alert as minimum_stock_alert',
+                'incomingstocks.unit as unit',
+                'incomingstocks.date as date',
+                'incomingstocks.rack_no as rack_no',
+                'incomingstocks.stock_in_hand as stock_in_hand',
+                'incomingstocks.purchasing_price as purchasing_price',
+                'incomingstocks.total_purchasing as total_purchasing',
+                'incomingstocks.selling_price as selling_price',
+                'incomingstocks.total_selling_price as total_selling_price',
+                'incomingstocks.export_selling_price as export_selling_price',
+                'incomingstocks.gea_selling_price as gea_selling_price',
+                'incomingstocks.carrot_no as carrot_no',
+                'incomingstocks.description as description',
+                'incomingstocks.dwg_no as dwg_no',
+                'incomingstocks.dimension as dimension'
+            );
 
-        return response()->json($parts);
-    }
-
-    public function create()
-    {
-        $machines = Machine::all()->sortBy('machine_id');
-        $spares = Spare::all()->sortBy('part_id');
-        return view('stockinventory.incomingstockadd', compact('machines', 'spares'));
-    }
-        public function store(Request $request)
-    {
-        $request->validate([
-            // 'date' => 'required|date',
-            // 'rack_no' => 'required|string',
-            // 'carrot_no' => 'required|string',
-            // 'description' => 'required|string',
-            // 'machine_id' => 'required|exists:machines,id',
-            // 'part_id' => 'required|exists:spares,id',
-            // 'dwg_no' => 'required|string',
-            // 'quantity' => 'required|numeric',
-            // 'unit' => 'required|string',
-            // 'incoming' => 'required|numeric',
-            // 'stock_in_hand' => 'required|numeric',
-            // 'minimum_stock_alert' => 'required|numeric',
-            // 'purchasing_price' => 'required|numeric',
-            // 'total_purchasing' => 'required|numeric',
-            // 'selling_price' => 'required|numeric',
-            // 'total_selling_price' => 'required|numeric',
-            // 'export_selling_price' => 'required|numeric',
-            // 'gea_selling_price' => 'required|numeric',
-        ]);
-
-        try {
-            DB::beginTransaction();
-            $existingRecord = Incomingstock::where('machine_id', $request->machine_id)
-                                          ->where('part_id', $request->part_id)
-                                          ->first();
-
-            if ($existingRecord) {
-                $existingRecord->update([
-                    'date' => $request->date,
-                    'rack_no' => $request->rack_no,
-                    'carrot_no' => $request->carrot_no,
-                    'description' => $request->description,
-                    'dwg_no' => $request->dwg_no,
-                    'dimension'=>$request->dimension,
-                    'quantity' => $existingRecord->quantity + $request->quantity,
-                    'unit' => $request->unit,
-                    'incoming' => $existingRecord->incoming + $request->incoming,
-                    'stock_in_hand' => $existingRecord->stock_in_hand + $request->stock_in_hand,
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
-                    'purchasing_price' => $request->purchasing_price,
-                    'total_purchasing' => $request->total_purchasing,
-                    'selling_price' => $request->selling_price,
-                    'total_selling_price' => $request->total_selling_price,
-                    'export_selling_price' => $request->export_selling_price,
-                    'gea_selling_price' => $request->gea_selling_price,
-                    'updated_by' => session('id'),
-                ]);
-            } else {
-                Incomingstock::create([
-                    'date' => $request->date,
-                    'rack_no' => $request->rack_no,
-                    'carrot_no' => $request->carrot_no,
-                    'description' => $request->description,
-                    'machine_id' => $request->machine_id,
-                    'part_id' => $request->part_id,
-                    'dwg_no' => $request->dwg_no,
-                    'quantity' => $request->quantity,
-                    'dimension'=>$request->dimension,
-                    'unit' => $request->unit,
-                    'incoming' => $request->incoming,
-                    'stock_in_hand' => $request->stock_in_hand,
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
-                    'purchasing_price' => $request->purchasing_price,
-                    'total_purchasing' => $request->total_purchasing,
-                    'selling_price' => $request->selling_price,
-                    'total_selling_price' => $request->total_selling_price,
-                    'export_selling_price' => $request->export_selling_price,
-                    'gea_selling_price' => $request->gea_selling_price,
-                    'created_by' => session('id'),
-                    'updated_by' => session('id'),
-                ]);
-            }
-
-            DB::commit();
-            return redirect('/stockinventory/incomingstock')->with('success', 'Stock inventory added/updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error($e->getMessage());
-            return redirect()->back()->with('error', 'Error while adding/updating the record.');
+        if ($request->filled('machine_id')) {
+            $incomingQuery->where('machines.id', $request->input('machine_id'));
         }
-    }
-    public function edit($id)
-    {
-        $incomingstock = Incomingstock::findOrFail($id);
-        $machines = Machine::all()->sortBy('machine_id');
-        $spares = Spare::all();
-        return view('stockinventory.incomingstockedit', compact('incomingstock', 'machines', 'spares'));
-    }
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'date' => 'required|date',
-            'rack_no' => 'required|string',
-            'carrot_no' => 'required|string',
-            'description' => 'required|string',
-            'machine_id' => 'required|exists:machines,id',
-            'part_id' => 'required|exists:spares,id',
-            'dwg_no' => 'required|string',
-            'quantity' => 'required|numeric',
-            'unit' => 'required|string',
-            'incoming' => 'required|numeric',
-            'stock_in_hand' => 'required|numeric',
-            'minimum_stock_alert' => 'required|numeric',
-            'purchasing_price' => 'required|numeric',
-            'total_purchasing' => 'required|numeric',
-            'selling_price' => 'required|numeric',
-            'total_selling_price' => 'required|numeric',
-            'export_selling_price' => 'required|numeric',
-            'gea_selling_price' => 'required|numeric',
-        ]);
 
-        try {
-            DB::beginTransaction();
-            $incomingstock = Incomingstock::findOrFail($id);
-            $incomingstock->update([
-                'date' => $request->date,
-                'rack_no' => $request->rack_no,
-                'carrot_no' => $request->carrot_no,
-                'description' => $request->description,
-                'machine_id' => $request->machine_id,
-                'part_id' => $request->part_id,
-                'dwg_no' => $request->dwg_no,
-                'quantity' => $request->quantity,
-                'unit' => $request->unit,
-                'dimension'=>$request->dimension,
-                'incoming' => $request->incoming,
-                'stock_in_hand' => $request->stock_in_hand,
-                'minimum_stock_alert' => $request->minimum_stock_alert,
-                'purchasing_price' => $request->purchasing_price,
-                'total_purchasing' => $request->total_purchasing,
-                'selling_price' => $request->selling_price,
-                'total_selling_price' => $request->total_selling_price,
-                'export_selling_price' => $request->export_selling_price,
-                'gea_selling_price' => $request->gea_selling_price,
-                'updated_by' => session('id'),
-            ]);
-            DB::commit();
-            return redirect('/stockinventory/incomingstock')->with('success', 'Stock inventory updated successfully.');
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error($e->getMessage());
-            return redirect()->back()->with('error', 'Error while updating the record.');
+        if ($request->filled('part_id')) {
+            $incomingQuery->where('spares.id', $request->input('part_id'));
         }
-    }
-    public function destroy($id)
-    {
-        try {
-            Incomingstock::destroy($id);
-            return response()->json(['success' => 'Stock inventory deleted successfully.']);
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => 'Error while deleting the record.']);
+
+        if ($request->filled('start_date')) {
+            $incomingQuery->whereDate('incomingstocks.date', '>=', $request->input('start_date'));
         }
+
+        if ($request->filled('end_date')) {
+            $incomingQuery->whereDate('incomingstocks.date', '<=', $request->input('end_date'));
+        }
+
+        $outgoingQuery = DB::table('outgoingstocks')
+            ->join('spares', 'outgoingstocks.part_id', '=', 'spares.id')
+            ->join('machines', 'outgoingstocks.machine_id', '=', 'machines.id')
+            ->select(
+                'spares.part_no as part_no',
+                'machines.model_no as machine_model',
+                DB::raw('NULL as incoming'),
+                'outgoingstocks.outgoing as outgoing',
+                'outgoingstocks.quantity as quantity',
+                'spares.minimum_stock_alert as minimum_stock_alert',
+                'outgoingstocks.unit as unit',
+                'outgoingstocks.date as date',
+                'outgoingstocks.rack_no as rack_no',
+                'outgoingstocks.stock_in_hand as stock_in_hand',
+                'outgoingstocks.purchasing_price as purchasing_price',
+                'outgoingstocks.total_purchasing as total_purchasing',
+                'outgoingstocks.selling_price as selling_price',
+                'outgoingstocks.total_selling_price as total_selling_price',
+                'outgoingstocks.export_selling_price as export_selling_price',
+                'outgoingstocks.gea_selling_price as gea_selling_price',
+                'outgoingstocks.carrot_no as carrot_no',
+                'outgoingstocks.description as description',
+                'outgoingstocks.dwg_no as dwg_no',
+                'outgoingstocks.dimension as dimension'
+            );
+
+        if ($request->filled('machine_id')) {
+            $outgoingQuery->where('machines.id', $request->input('machine_id'));
+        }
+
+        if ($request->filled('part_id')) {
+            $outgoingQuery->where('spares.id', $request->input('part_id'));
+        }
+
+        if ($request->filled('start_date')) {
+            $outgoingQuery->whereDate('outgoingstocks.date', '>=', $request->input('start_date'));
+        }
+
+        if ($request->filled('end_date')) {
+            $outgoingQuery->whereDate('outgoingstocks.date', '<=', $request->input('end_date'));
+        }
+
+        $combinedQuery = $incomingQuery->unionAll($outgoingQuery);
+
+        $finalQuery = DB::table(DB::raw("({$combinedQuery->toSql()}) as sub"))
+            ->mergeBindings($combinedQuery)
+            ->select(
+                'sub.part_no',
+                'sub.machine_model',
+                'sub.incoming',
+                'sub.outgoing',
+                'sub.quantity',
+                'sub.unit',
+                'sub.rack_no',
+                'sub.minimum_stock_alert',
+                'sub.stock_in_hand',
+                'sub.date',
+                'sub.purchasing_price',
+                'sub.total_purchasing',
+                'sub.selling_price',
+                'sub.total_selling_price',
+                'sub.export_selling_price',
+                'sub.gea_selling_price',
+                'sub.carrot_no',
+                'sub.description',
+                'sub.dwg_no',
+                'sub.dimension'
+            )
+            ->orderBy('sub.date', 'asc');
+
+        return DataTables::of($finalQuery)->make(true);
     }
+
 }

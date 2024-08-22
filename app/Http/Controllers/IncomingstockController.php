@@ -7,7 +7,6 @@ use App\Models\Machine;
 use App\Models\Spare;
 use App\Models\Incomingstock;
 use App\Models\Availablestock;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -21,56 +20,49 @@ class IncomingstockController extends Controller
         return view('stockinventory.incomingstocklist', compact('machines', 'spares'));
     }
 
-    public function getincomingstocks()
-{
-    $incomingstocks = Incomingstock::select([
-        'incomingstocks.id',
-        'incomingstocks.date',
-        'incomingstocks.rack_no',
-        'incomingstocks.carrot_no',
-        'incomingstocks.description',
-        'incomingstocks.incoming',
-        'incomingstocks.unit',
-        'spares.part_no',
-        'spares.minimum_stock_alert',
-        'incomingstocks.stock_in_hand',
-        'machines.model_no as machine_model',
-    ])
-    ->join('spares', 'incomingstocks.part_id', '=', 'spares.id')
-    ->join('machines', 'spares.machine_id', '=', 'machines.id');
+    public function getincomingstocks(Request $request)
+    {
+        $incomingstocks = Incomingstock::select([
+            'incomingstocks.id',
+            'incomingstocks.date',
+            'incomingstocks.rack_no',
+            'incomingstocks.carrot_no',
+            'incomingstocks.description',
+            'incomingstocks.incoming',
+            'incomingstocks.unit',
+            'spares.part_no',
+            'spares.minimum_stock_alert',
+            'incomingstocks.stock_in_hand',
+            'machines.model_no as machine_model',
+        ])
+        ->join('spares', 'incomingstocks.part_id', '=', 'spares.id')
+        ->join('machines', 'spares.machine_id', '=', 'machines.id');
 
-    return DataTables::of($incomingstocks)
-        ->addColumn('action', function ($incomingstock) {
-            return '
-                <div class="dropdown">
-                    <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                        <i class="fa fa-ellipsis-h"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="'.url('/stockinventory/incomingstock/'.$incomingstock->id.'/edit').'"><i class="fa fa-pencil"></i> Edit</a>
-                        <a class="dropdown-item deleteBtn" data-url="'.url('/stockinventory/incomingstock/'.$incomingstock->id).'"><i class="fa fa-trash"></i> Delete</a>
-                    </div>
-                </div>';
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
-public function getData(Request $request)
-{
-    $query = IncomingStock::query();
-    $incomingstocks = IncomingStock::with('spares')->get();
+        // Apply filters
+        if ($request->has('machine_id') && $request->machine_id != '') {
+            $incomingstocks->where('machines.id', $request->machine_id);
+        }
 
-    if ($request->has('machine_id') && $request->machine_id) {
-        $query->where('machine_id', $request->machine_id);
+        if ($request->has('part_id') && $request->part_id != '') {
+            $incomingstocks->where('spares.id', $request->part_id);
+        }
+
+        return DataTables::of($incomingstocks)
+            ->addColumn('action', function ($incomingstock) {
+                return '
+                    <div class="dropdown">
+                        <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="'.url('/stockinventory/incomingstock/'.$incomingstock->id.'/edit').'"><i class="fa fa-pencil"></i> Edit</a>
+                            <a class="dropdown-item deleteBtn" data-url="'.url('/stockinventory/incomingstock/'.$incomingstock->id).'"><i class="fa fa-trash"></i> Delete</a>
+                        </div>
+                    </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
-
-    if ($request->has('part_id') && $request->part_id) {
-        $query->where('part_id', $request->part_id);
-    }
-
-    return datatables()->of($query)->make(true);
-}
-
   public function getIncomingstockDetails(Request $request)
     {
         $machineId = $request->input('machineId');
@@ -89,15 +81,21 @@ public function getData(Request $request)
     public function store(Request $request)
     {
         Log::info('Request Data:', $request->all());
+
         $request->validate([
+            'quantity' => 'required|numeric|min:0',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $stock_in_hand = $request->quantity + $request->incoming;
+            $currentStock = Availablestock::where('machine_id', $request->machine_id)
+                ->where('part_id', $request->part_id)
+                ->value('quantity');
 
-            $stock_in_hand = is_numeric($stock_in_hand) ? $stock_in_hand : 0;
+            $stock_in_hand = ($currentStock ?? 0) + $request->incoming;
+
+            Log::info('Quantity before creation:', ['quantity' => $request->quantity]);
 
             $incomingstock = Incomingstock::create([
                 'date' => $request->date,
@@ -112,29 +110,25 @@ public function getData(Request $request)
                 'unit' => $request->unit,
                 'incoming' => $request->incoming,
                 'stock_in_hand' => $stock_in_hand,
-                'minimum_stock_alert' => $request->minimum_stock_alert,
                 'purchasing_price' => $request->purchasing_price,
                 'total_purchasing' => $request->total_purchasing,
                 'selling_price' => $request->selling_price,
                 'total_selling_price' => $request->total_selling_price,
                 'export_selling_price' => $request->export_selling_price,
                 'gea_selling_price' => $request->gea_selling_price,
-               "created_by" => session('id'),
-               "updated_by" => session('id')
+                'created_by' => session('id'),
+                'updated_by' => session('id')
             ]);
 
-            $availablestock = Availablestock::updateOrCreate(
+            Log::info('Created Incomingstock:', $incomingstock->toArray());
+
+            Availablestock::updateOrCreate(
                 ['machine_id' => $request->machine_id, 'part_id' => $request->part_id],
-                [
-                    'quantity' => DB::raw("quantity + $stock_in_hand"),
-                    'minimum_stock_alert' => $request->minimum_stock_alert,
-                ]
+                ['quantity' => $stock_in_hand]
             );
 
-            $spare = Spare::where('id', $request->part_id)->first();
-            $spare->update([
-                'quantity' => DB::raw("quantity + $stock_in_hand"),
-                'minimum_stock_alert' => $request->minimum_stock_alert,
+            Spare::where('id', $request->part_id)->update([
+                'quantity' => $stock_in_hand,
             ]);
 
             DB::commit();
@@ -169,7 +163,7 @@ public function getData(Request $request)
             'quantity' => 'required|numeric|min:0',
             'incoming' => 'required|numeric|min:0',
             'stock_in_hand' => 'required|numeric|min:0',
-            'minimum_stock_alert' => 'required|numeric|min:0',
+            // 'minimum_stock_alert' => 'required|numeric|min:0',
             'purchasing_price' => 'nullable|numeric|min:0',
             'total_purchasing' => 'nullable|numeric|min:0',
             'selling_price' => 'nullable|numeric|min:0',
@@ -178,7 +172,6 @@ public function getData(Request $request)
             'gea_selling_price' => 'nullable|numeric|min:0',
             'dimension' => 'nullable|string',
         ]);
-
         try {
             DB::beginTransaction();
 
@@ -199,7 +192,7 @@ public function getData(Request $request)
                 'dimension' => $request->dimension,
                 'incoming' => $request->incoming,
                 'stock_in_hand' => $request->stock_in_hand,
-                'minimum_stock_alert' => $request->minimum_stock_alert,
+                // 'minimum_stock_alert' => $request->minimum_stock_alert,
                 'purchasing_price' => $request->purchasing_price,
                 'total_purchasing' => $request->total_purchasing,
                 'selling_price' => $request->selling_price,
@@ -209,13 +202,11 @@ public function getData(Request $request)
                 'updated_by' => session('id'),
             ]);
 
-            // Update Spare
             $spare = Spare::findOrFail($request->part_id);
             $spare->quantity += $quantityDifference;
-            $spare->minimum_stock_alert = $request->minimum_stock_alert;
+            // $spare->minimum_stock_alert = $request->minimum_stock_alert;
             $spare->save();
 
-            // Optionally update Availablestock
             Availablestock::updateOrCreate(
                 ['machine_id' => $request->machine_id, 'part_id' => $request->part_id],
                 ['quantity' => DB::raw("quantity + $quantityDifference")]
