@@ -35,35 +35,35 @@ Route::middleware(['CheckAuth'])->group(function(){
 
     Route::resource('/user' , UserController::class);
 
+    //client
     Route::get('/client/data' , [ClientController::class,'getClients']);
-
-
     Route::get('/client/bulkupload' , [ClientController::class,'getBulk']);
-
     Route::post('/client/bulkupload/submit' , [ClientController::class,'storeBulk']);
-
     Route::resource('/client' , ClientController::class);
 
+    //machine
     Route::get('/machine/data' , [MachineController::class,'getMachines']);
+    Route::resource('/machine', MachineController::class)->except(['show']);
+    Route::get('/machine/bulkupload', [MachineController::class, 'showBulkUploadForm'])->name('machine.bulkupload.form');
+    Route::post('/machine/bulkupload/submit', [MachineController::class, 'storeBulk'])->name('machine.bulkupload.submit');
 
-    Route::resource('/machine', MachineController::class);
-
+    //sapre
     Route::get('/spare/data' , [SpareController::class,'getSpares']);
+    Route::resource('/spare', SpareController::class)->except(['show']);
+    Route::get('/spare/bulkupload', [SpareController::class, 'showBulkUploadForm'])->name('spare.bulkupload.form');
+    Route::post('/spare/bulkupload/submit', [SpareController::class, 'storeBulk'])->name('sapre.bulkupload.submit');
 
-    Route::resource('/spare', SpareController::class);
-
+//customerprice
     Route::get('/customerprice/data', [CustomerWisePriceController::class, 'getCustomerprice'])->name('customerprice.data');
     Route::resource('/customerprice', CustomerWisePriceController::class);
 
-
+//quotation
     Route::get('/quotation/data', [QuotationController::class, 'data'])->name('quotation.data');
-
     Route::resource('/quotation', QuotationController::class);
 
+    //bayer
     Route::get('/buyer/data' , [BuyerController::class,'getBuyers']);
-
     Route::post('/buyer/add', [BuyerController::class, 'addBuyer'])->name('buyer.add');
-
     Route::resource('/buyer' , BuyerController::class);
 
 
@@ -71,44 +71,42 @@ Route::middleware(['CheckAuth'])->group(function(){
 
 
 Route::post('/get-machine-details', [CustomerWisePriceController::class, 'getMachineDetails'])->name('getMachineDetails');
-
 Route::get('/get-customerprice-details' , [CustomerWisePriceController::class ,'get_customerlist_details'])->name('get-customerprice-details');
 
+//quotation
 Route::get('/get-customerlist-details' , [QuotationController::class ,'get_customerlist_details'])->name('get-customerlist-details');
-
 Route::get('/get-quotationlist-details' , [QuotationController::class ,'getQuotationListDetails'])->name('get-Quotationlist-details');
-
 Route::get('/getCustomerprice', [QuotationController::class, 'getCustomerprice'])->name('getCustomerprice');
-
 Route::get('/quotation/{id?}/view', [QuotationController::class, 'viewQuotation'])->name('quotation.view');
-
 Route::get('/quotation/{id}/pdf', [QuotationController::class, 'downloadPDF'])->name('quotation.pdf');
 
+//Availablestock
 Route::resource('/stockinventory/availablestock', AvailablestockController::class);
-
 Route::get('/availablestock/data', [AvailablestockController::class, 'getAvailablestocks'])->name('availablestock.data');
 Route::get('/availablestock/{id}/edit', [AvailablestockController::class, 'edit'])->name('availablestock.edit');
 Route::put('/availablestock/{id}', [AvailablestockController::class, 'update'])->name('availablestock.update');
-
-
-Route::get('/incomingstock/data', [IncomingstockController::class, 'getIncomingstocks']);
-Route::resource('/stockinventory/incomingstock', IncomingstockController::class);
-Route::post('/get-incoming-details', [IncomingstockController::class, 'getIncomingstockDetails'])->name('getIncomingstockDetails');
-
-Route::get('/outgoingstock/data' , [OutgoingstockController::class, 'getOutgoingstocks']);
-Route::resource('/stockinventory/outgoingstock', OutgoingstockController::class);
-
-Route::get('/incomingstock/data', [IncomingstockController::class, 'getIncomingstocks'])->name('incomingstock.data');
-
-Route::get('/stockinventory/reports', [ReportsController::class, 'index']);
-Route::resource('/stockinventory/reports',ReportsController::class);
-
 Route::post('/availablestock/update-alert/{id}', [AvailablestockController::class, 'update'])->name('availablestock.update');
 
+
+
+//outgoingstock
+Route::get('/outgoingstock/data' , [OutgoingstockController::class, 'getOutgoingstocks']);
+Route::resource('/stockinventory/outgoingstock', OutgoingstockController::class)->except(['show']);
+Route::get('/stockinventory/outgoingstock/bulkupload', [OutgoingstockController::class, 'getBulk'])->name('outgoingstock.bulk');
+Route::post('/stockinventory/outgoingstock/bulkupload/submit', [OutgoingstockController::class, 'storeBulk'])->name('outgoingstock.storeBulk');
+
+//Reports
+Route::get('/stockinventory/reports', [ReportsController::class, 'index']);
+Route::resource('/stockinventory/reports',ReportsController::class);
 Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 Route::get('/report/data', [ReportsController::class, 'getReportData'])->name('report.data');
 
-
+//incomingstock
+Route::get('/stockinventory/incomingstock/bulkupload', [IncomingstockController::class, 'getBulk'])->name('incomingstock.bulk');
+Route::post('/stockinventory/incomingstock/bulkupload/submit', [IncomingstockController::class, 'storeBulk'])->name('incomingstock.storeBulk');
+Route::get('/incomingstock/data', [IncomingstockController::class, 'getIncomingstocks'])->name('incomingstock.data');
+Route::resource('/stockinventory/incomingstock', IncomingstockController::class)->except(['show']);
+Route::post('/get-incoming-details', [IncomingstockController::class, 'getIncomingstockDetails'])->name('getIncomingstockDetails');
 
 
 

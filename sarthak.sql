@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2024 at 06:25 PM
+-- Generation Time: Sep 01, 2024 at 11:13 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,8 +33,8 @@ CREATE TABLE `availablestocks` (
   `machine_id` varchar(200) DEFAULT NULL,
   `quantity` varchar(200) DEFAULT NULL,
   `minimum_stock_alert` varchar(200) DEFAULT '3',
-  `created_by` int(10) DEFAULT NULL,
-  `updated_by` int(10) DEFAULT NULL,
+  `created_by` int(10) DEFAULT 11,
+  `updated_by` int(10) DEFAULT 11,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -44,7 +44,8 @@ CREATE TABLE `availablestocks` (
 --
 
 INSERT INTO `availablestocks` (`id`, `part_id`, `machine_id`, `quantity`, `minimum_stock_alert`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '1', '80', '12', NULL, NULL, '2024-08-22 10:42:22', '2024-08-22 10:43:54');
+(1, '2', '1', '910', '3', 11, 11, '2024-09-01 03:25:10', '2024-09-01 03:41:26'),
+(2, '1', '2', '75', '3', 11, 11, '2024-09-01 03:26:11', '2024-09-01 03:28:26');
 
 -- --------------------------------------------------------
 
@@ -145,7 +146,9 @@ CREATE TABLE `customerprices` (
 --
 
 INSERT INTO `customerprices` (`id`, `machine_id`, `part_id`, `customer_id`, `price`, `discount`, `discount_percent`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '1', '1', 1000, '10', '5', 33, 33, '2024-07-01 02:02:08', '2024-07-01 02:02:08');
+(1, '1', '1', '1', 1000, '10', '5', 33, 33, '2024-07-01 02:02:08', '2024-07-01 02:02:08'),
+(2, '3', '10', '2', 1000, '10', '20', 33, 33, '2024-08-29 03:59:46', '2024-08-29 03:59:46'),
+(3, '3', '10', '1', 1000, '22', '3', 33, 33, '2024-08-29 03:59:46', '2024-08-29 03:59:46');
 
 -- --------------------------------------------------------
 
@@ -155,24 +158,24 @@ INSERT INTO `customerprices` (`id`, `machine_id`, `part_id`, `customer_id`, `pri
 
 CREATE TABLE `incomingstocks` (
   `id` int(11) NOT NULL,
+  `date` date DEFAULT NULL,
   `part_id` varchar(200) DEFAULT NULL,
   `machine_id` varchar(200) DEFAULT NULL,
-  `date` date DEFAULT NULL,
   `rack_no` varchar(200) DEFAULT NULL,
   `carrot_no` varchar(200) DEFAULT NULL,
-  `description` varchar(200) DEFAULT NULL,
-  `dwg_no` varchar(200) DEFAULT NULL,
-  `quantity` varchar(200) DEFAULT NULL,
-  `unit` varchar(200) DEFAULT NULL,
-  `incoming` varchar(200) DEFAULT NULL,
-  `stock_in_hand` varchar(200) DEFAULT NULL,
+  `quantity` varchar(250) DEFAULT NULL,
+  `incoming` varchar(250) DEFAULT NULL,
+  `stock_in_hand` varchar(250) DEFAULT NULL,
   `minimum_stock_alert` varchar(200) DEFAULT '3',
+  `unit` varchar(200) DEFAULT NULL,
   `purchasing_price` varchar(200) DEFAULT NULL,
   `total_purchasing` varchar(200) DEFAULT NULL,
   `selling_price` varchar(200) DEFAULT NULL,
   `total_selling_price` varchar(200) DEFAULT NULL,
   `export_selling_price` varchar(200) DEFAULT NULL,
   `gea_selling_price` varchar(200) DEFAULT NULL,
+  `description` varchar(250) DEFAULT NULL,
+  `dwg_no` varchar(200) DEFAULT NULL,
   `dimension` varchar(200) DEFAULT NULL,
   `created_by` int(10) DEFAULT NULL,
   `updated_by` int(10) DEFAULT NULL,
@@ -184,8 +187,10 @@ CREATE TABLE `incomingstocks` (
 -- Dumping data for table `incomingstocks`
 --
 
-INSERT INTO `incomingstocks` (`id`, `part_id`, `machine_id`, `date`, `rack_no`, `carrot_no`, `description`, `dwg_no`, `quantity`, `unit`, `incoming`, `stock_in_hand`, `minimum_stock_alert`, `purchasing_price`, `total_purchasing`, `selling_price`, `total_selling_price`, `export_selling_price`, `gea_selling_price`, `dimension`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '1', '2024-08-23', 'RACK F2', 'D4', 'stock', '0', '0', 'SET', '100', '100', '3', NULL, '2000000', '300000', '300000000', '4000000000', '2500', '000', 33, 33, '2024-08-22 10:42:22', '2024-08-22 10:42:22');
+INSERT INTO `incomingstocks` (`id`, `date`, `part_id`, `machine_id`, `rack_no`, `carrot_no`, `quantity`, `incoming`, `stock_in_hand`, `minimum_stock_alert`, `unit`, `purchasing_price`, `total_purchasing`, `selling_price`, `total_selling_price`, `export_selling_price`, `gea_selling_price`, `description`, `dwg_no`, `dimension`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, '2024-09-01', '2', '1', 'RACK F1', 'D4', '0', '1000', '1000', '3', 'nos', '1110.00', '1110.00', '1110.00', '1110.00', '1110.00', '1110.00', 'V-RING', '8', '69.6 MM', 33, 33, '2024-09-01 03:25:10', '2024-09-01 03:25:10'),
+(2, '2024-09-01', '1', '2', 'RACK F2', 'D4', '0', '100', '100', '3', 'nos', '49495.00', '49495.00', '395960.00', '395960.00', '395960.00', '395960.00', '69.6 MM', '01', '8', 33, 33, '2024-09-01 03:26:11', '2024-09-01 03:26:11'),
+(3, '2024-09-02', '2', '1', 'RACK F1', 'D4', '900', '10', '910', '3', 'nos', '1110.00', '1110.00', '1110.00', '1110.00', '1110.00', '1110.00', 'Stock', '01', '69.6 MM', 33, 33, '2024-09-01 03:41:26', '2024-09-01 03:41:26');
 
 -- --------------------------------------------------------
 
@@ -209,8 +214,8 @@ CREATE TABLE `machines` (
 --
 
 INSERT INTO `machines` (`id`, `machine_name`, `description`, `model_no`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, 'solenoidtt', 'water assembly', 'MDS-90-01-076', 33, 33, '2024-07-01 01:52:03', '2024-07-01 01:52:03'),
-(2, 'ds20304', 'e', '67677667', 33, 33, '2024-08-20 07:40:23', '2024-08-20 07:40:23');
+(1, 'V-RING-25', 'V-RING', 'SED-5-9-V-RING', 33, 33, '2024-09-01 03:18:13', '2024-09-01 03:18:13'),
+(2, 'O-RING-12', 'O-RING', 'SD-12-O-RING', 33, 33, '2024-09-01 03:19:04', '2024-09-01 03:19:04');
 
 -- --------------------------------------------------------
 
@@ -232,24 +237,24 @@ CREATE TABLE `migrations` (
 
 CREATE TABLE `outgoingstocks` (
   `id` int(11) NOT NULL,
+  `date` date DEFAULT NULL,
   `part_id` varchar(200) DEFAULT NULL,
   `machine_id` varchar(200) DEFAULT NULL,
-  `date` date DEFAULT NULL,
   `rack_no` varchar(200) DEFAULT NULL,
   `carrot_no` varchar(200) DEFAULT NULL,
-  `description` varchar(200) DEFAULT NULL,
-  `dwg_no` varchar(200) DEFAULT NULL,
-  `quantity` varchar(200) DEFAULT NULL,
-  `unit` varchar(200) DEFAULT NULL,
-  `outgoing` varchar(200) DEFAULT NULL,
+  `quantity` varchar(250) DEFAULT NULL,
+  `outgoing` varchar(250) DEFAULT NULL,
   `stock_in_hand` varchar(200) DEFAULT NULL,
   `minimum_stock_alert` varchar(200) DEFAULT '3',
+  `unit` varchar(250) DEFAULT NULL,
   `purchasing_price` varchar(200) DEFAULT NULL,
   `total_purchasing` varchar(200) DEFAULT NULL,
   `selling_price` varchar(200) DEFAULT NULL,
   `total_selling_price` varchar(200) DEFAULT NULL,
   `export_selling_price` varchar(200) DEFAULT NULL,
   `gea_selling_price` varchar(200) DEFAULT NULL,
+  `description` varchar(250) DEFAULT NULL,
+  `dwg_no` varchar(250) DEFAULT NULL,
   `dimension` varchar(200) DEFAULT NULL,
   `created_by` int(10) DEFAULT NULL,
   `updated_by` int(10) DEFAULT NULL,
@@ -261,8 +266,9 @@ CREATE TABLE `outgoingstocks` (
 -- Dumping data for table `outgoingstocks`
 --
 
-INSERT INTO `outgoingstocks` (`id`, `part_id`, `machine_id`, `date`, `rack_no`, `carrot_no`, `description`, `dwg_no`, `quantity`, `unit`, `outgoing`, `stock_in_hand`, `minimum_stock_alert`, `purchasing_price`, `total_purchasing`, `selling_price`, `total_selling_price`, `export_selling_price`, `gea_selling_price`, `dimension`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(1, '1', '1', '2024-08-23', 'RACK F2', 'D4', 'stock', '0', '100', 'SET', '20', '80', '3', '200000', '2000000', '300000', '3000000000', '4000000', '250', '000', 33, 33, '2024-08-22 10:43:25', '2024-08-22 10:43:25');
+INSERT INTO `outgoingstocks` (`id`, `date`, `part_id`, `machine_id`, `rack_no`, `carrot_no`, `quantity`, `outgoing`, `stock_in_hand`, `minimum_stock_alert`, `unit`, `purchasing_price`, `total_purchasing`, `selling_price`, `total_selling_price`, `export_selling_price`, `gea_selling_price`, `description`, `dwg_no`, `dimension`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, '2024-09-02', '2', '1', 'RACK F1', 'D4', '1000', '100', '900', '3', 'nos', '1110.00', '1110.00', '1110.00', '1110.00', '1110.00', '1110.00', '69.6 MM', '01', '69.6 MM', 33, 33, '2024-09-01 03:27:32', '2024-09-01 03:27:32'),
+(2, '2024-09-02', '1', '2', 'RACK F2', 'D4', '100', '25', '75', '3', 'nos', '49495.00', '49495.00', '395960.00', '395960.00', '395960.00', '395960.00', '69.6 MM', '01', '8', 33, 33, '2024-09-01 03:28:26', '2024-09-01 03:28:26');
 
 -- --------------------------------------------------------
 
@@ -355,9 +361,8 @@ CREATE TABLE `spares` (
 --
 
 INSERT INTO `spares` (`id`, `machine_id`, `part_no`, `description`, `purchase_from`, `buying_price`, `selling_price`, `drawing_upload`, `gea_selling_price`, `unit`, `hsn_code`, `comment`, `dimension`, `created_by`, `updated_by`, `created_at`, `updated_at`, `minimum_stock_alert`, `quantity`) VALUES
-(1, '1', '8134-2100-270', 'Solenoid Water Assembly', 'ShubhiTech', '200', '300', 'Spare_stfSbtqYI9CNiRaOLEJRSBHr4Ycdt0.jpeg', '250', 'SET', '00000', 'solenoidtt', '000', 33, 33, '2024-07-01 02:01:24', '2024-08-22 10:43:54', 12, '80'),
-(8, '2', '4333', 'f4', 'ShubhiTech', '884', '494', NULL, '49', 'set', '8', NULL, '5', 33, 33, '2024-08-20 12:15:32', '2024-08-22 06:19:56', 3, '0'),
-(9, '1', '4333333333333', 'stock', 'ShubhiTech', '99999999', '3434', NULL, '666666666', 'SET', '34444444444', 'yes', '009', 33, 33, '2024-08-22 05:21:59', '2024-08-22 05:24:52', 3, '0');
+(1, '2', ' 131128749', 'O-RING', 'ShubhiTech', '49495.00', '395960.00', NULL, '395960.00', 'nos', '000', 'yes', '8', 33, 33, '2024-09-01 03:21:29', '2024-09-01 03:28:26', 3, '75'),
+(2, '1', '131071714', '69.6 MM', 'ShubhiTech', '1110.00', '1110.00', NULL, '1110.00', 'nos', '00', 'yes', '69.6 MM', 33, 33, '2024-09-01 03:23:04', '2024-09-01 03:41:26', 3, '910');
 
 -- --------------------------------------------------------
 
@@ -480,7 +485,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `availablestocks`
 --
 ALTER TABLE `availablestocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `buyers`
@@ -498,13 +503,13 @@ ALTER TABLE `clients`
 -- AUTO_INCREMENT for table `customerprices`
 --
 ALTER TABLE `customerprices`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `incomingstocks`
 --
 ALTER TABLE `incomingstocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `machines`
@@ -522,7 +527,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `outgoingstocks`
 --
 ALTER TABLE `outgoingstocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `quotationlists`
@@ -540,7 +545,7 @@ ALTER TABLE `quotations`
 -- AUTO_INCREMENT for table `spares`
 --
 ALTER TABLE `spares`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`

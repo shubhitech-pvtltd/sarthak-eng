@@ -31,10 +31,14 @@ class SpareController extends Controller
             'spares.hsn_code',
             'spares.comment',
             'spares.dimension',
-            'machines.machine_name'
+            'spares.machine_id',
+            'machines.machine_name',
+            'machines.model_no',
         ])
         ->leftJoin('machines', 'spares.machine_id', '=', 'machines.id')
-        ->orderBy('machines.machine_name', 'asc')
+        ->orderBy('machines.machine_name')
+        ->orderBy('machines.model_no')
+        ->orderBy('spares.machine_id')
         ->get();
 
         return DataTables::of($spares)
@@ -197,4 +201,100 @@ class SpareController extends Controller
     {
        $result = Spare::destroy($id);
     }
+
+    public function showBulkUploadForm()
+    {
+        return view('spare.sparebulkupload');
+    }
+  
+    public function storeBulk(Request $request)
+{
+    $request->validate([
+        'spare_bulk_csv' => 'required|mimes:csv,txt',
+    ]);
+
+    $file = $request->file('spare_bulk_csv');
+    $fileData = file_get_contents($file);
+
+    $rows = array_map("str_getcsv", explode("\n", $fileData));
+    $header = array_shift($rows); 
+
+    $headerMapping = [
+        'Machine ID' => 'machine_id',
+        'Part No' => 'part_no',
+        'Description' => 'description',
+        'Purchase From' => 'purchase_from',
+        'Buying Price' => 'buying_price',
+        'Selling Price' => 'selling_price',
+        'Drawing Upload' => 'drawing_upload',
+        'GEA Selling Price' => 'gea_selling_price',
+        'Unit' => 'unit',
+        'HSN Code' => 'hsn_code',
+        'Comment' => 'comment',
+        'Dimension' => 'dimension',
+    ];
+
+    DB::beginTransaction();
+    try {
+        foreach ($rows as $row) {
+            if (empty(array_filter($row))) {
+                Log::warning('Row skipped because it is empty or contains only null values.');
+                continue;
+            }
+
+            $data = array_fill_keys(array_values($headerMapping), null);
+
+            foreach ($header as $key => $column) {
+                $mappedField = $headerMapping[$column] ?? null;
+                if ($mappedField && isset($row[$key])) {
+                    $data[$mappedField] = trim($row[$key]) !== '' ? trim($row[$key]) : null;
+                }
+            }
+
+            $data['created_by'] = session('id') ?? 1;
+            $data['updated_by'] = session('id') ?? 1;
+
+            Log::info('Mapped Data: ', $data);
+
+            if (is_null($data['machine_id']) || is_null($data['part_no'])) {
+                Log::warning('Row skipped due to missing required fields: ' . json_encode($row));
+                continue;
+            }
+
+            $machineExists = Machine::where('id', $data['machine_id'])->exists();
+
+            if (!$machineExists) {
+                Log::error('Machine ID: ' . $data['machine_id'] . ' does not exist in the Machine table. Skipping this row.');
+                return redirect()->back()->with('error', 'Machine ID: ' . $data['machine_id'] . ' does not exist in the Machine table. Upload aborted.');
+            }
+
+            $existingSpare = Spare::where('machine_id', $data['machine_id'])
+                                   ->where('part_no', $data['part_no'])
+                                   ->first();
+
+            if ($existingSpare) {
+                Log::info('Record with Machine ID: ' . $data['machine_id'] . ' and Part No: ' . $data['part_no'] . ' already exists. Skipping insertion.');
+                continue;
+            }
+
+            $spare = Spare::create($data);
+
+            if ($spare) {
+                Log::info('Inserted into Spare: ', $spare->toArray());
+            } else {
+                Log::error('Failed to insert into Spare');
+                throw new \Exception('Failed to insert into Spare');
+            }
+        }
+
+        DB::commit();
+        return redirect('/spare')->with('success', 'Spare records uploaded successfully');
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error during bulk upload: ' . $e->getMessage());
+        Log::error('Error Trace: ' . $e->getTraceAsString());
+        return redirect()->back()->with('error', 'Error occurred during bulk upload.');
+    }
+}
+  
 }

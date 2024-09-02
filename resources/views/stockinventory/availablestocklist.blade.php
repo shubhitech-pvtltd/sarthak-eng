@@ -97,7 +97,7 @@
 
                 $(row).find('td').removeClass('low-quantity alert-yellow');
 
-                if (availableQuantity <= 4) {
+                if (availableQuantity <= 3) {
                     $(row).find('td:eq(3)').addClass('low-quantity');
                 }
 

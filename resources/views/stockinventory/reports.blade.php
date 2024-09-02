@@ -8,7 +8,7 @@
                 <h3 class="text-blue">Reports</h3>
             </div>
             <div class="pull-right">
-                <button id="downloadExcelBtn" class="btn btn-primary mb-3"> Download Excel</button>
+                <button id="downloadExcelBtn" class="btn btn-success mb-3"> Download Excel</button>
             </div>
         </div>
         <div class="form-group row mb-3">

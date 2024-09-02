@@ -11,6 +11,8 @@
             <div class="pull-right">
                 <a href="{{ url('/stockinventory/incomingstock/create')}}" class="btn btn-primary">Add Incoming Stock
                 </a>
+                <a href="{{ url('/stockinventory/incomingstock/bulkupload')}}" class="btn btn-primary">Bulk Upload</a>
+
             </div>
         </div>
         <div class="form-group row">

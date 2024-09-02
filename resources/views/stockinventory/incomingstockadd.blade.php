@@ -107,7 +107,7 @@
                 <div class="form-group row">
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Purchasing Price<span class="text-danger">*</span></label>
-                        <input type="text" name="buying_price" value="" class="form-control buying_price" placeholder="Enter Purchasing Price">
+                        <input type="text" name="purchasing_price" value="" class="form-control buying_price" placeholder="Enter Purchasing Price">
                     </div>
                     <div class="col-sm-6 fw-bold">
                         <label class="col-form-label">Total Purchasing<span class="text-danger">*</span></label>

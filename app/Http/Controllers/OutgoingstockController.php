@@ -7,6 +7,7 @@ use App\Models\Machine;
 use App\Models\Spare;
 use App\Models\Outgoingstock;
 use App\Models\Availablestock;
+use App\Models\Incomingstock; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -261,6 +262,143 @@ class OutgoingstockController extends Controller
             return response()->json(['error' => 'Error while deleting the record.']);
         }
     }
+
+    public function getBulk()
+    {
+        return view('stockinventory.bulkuploadoutgoingstock');
+    }
+   
+public function storeBulk(Request $request)
+{
+    $request->validate([
+        'stock_bulk_csv' => 'required|mimes:csv,txt',
+    ]);
+
+    $file = $request->file('stock_bulk_csv');
+    $fileData = file_get_contents($file);
+
+    $rows = array_map("str_getcsv", explode("\n", $fileData));
+    $header = array_shift($rows); 
+
+    $headerMapping = [
+        'Date' => 'date',
+        'Part ID' => 'part_id',
+        'Machine Model' => 'machine_id',
+        'Rack' => 'rack_no',
+        'Carrot No' => 'carrot_no',
+        'Quantity' => 'quantity',
+        'Outgoing' => 'outgoing',
+        'Stock In Hand' => 'stock_in_hand',
+        'Minimum Stock Alert' => 'minimum_stock_alert',
+        'Unit' => 'unit',
+        'Purchasing Price' => 'purchasing_price',
+        'Total Purchasing' => 'total_purchasing',
+        'Selling Price' => 'selling_price',
+        'Total Selling Price' => 'total_selling_price',
+        'Export Selling Price' => 'export_selling_price',
+        'GEA Selling Price' => 'gea_selling_price',
+        'Description' => 'description',
+        'DWG No' => 'dwg_no',
+        'Dimension' => 'dimension',
+    ];
+
+    DB::beginTransaction();
+    try {
+        foreach ($rows as $row) {
+            if (count($row) < count($header)) {
+                Log::warning('Row skipped due to insufficient columns: ' . json_encode($row));
+                continue; 
+            }
+
+            $data = array_fill_keys(array_values($headerMapping), null);
+
+            foreach ($header as $key => $column) {
+                $mappedField = $headerMapping[$column] ?? null;
+                if ($mappedField && isset($row[$key])) {
+                    if ($mappedField == 'date') {
+                        $date = \DateTime::createFromFormat('d-m-Y', $row[$key]);
+                        if ($date) {
+                            $data[$mappedField] = $date->format('Y-m-d');
+                        } else {
+                            Log::warning('Invalid date format: ' . $row[$key]);
+                            $data[$mappedField] = null;
+                        }
+                    } else {
+                        $data[$mappedField] = $row[$key] !== '' ? $row[$key] : null;
+                    }
+                }
+            }
+
+            if (is_null($data['part_id'])) {
+                Log::warning('Row skipped because part_id is null: ' . json_encode($row));
+                continue; 
+            }
+
+            $spare = Spare::where('id', $data['part_id'])
+                          ->where('machine_id', $data['machine_id'])
+                          ->first();
+
+            if (!$spare) {
+                Log::error('No matching record found in Spares for machine_id: ' . $data['machine_id'] . ' and part_id: ' . $data['part_id']);
+                return redirect()->back()->with('error', 'Mismatch detected: No matching record found in Spares table for Machine ID: ' . $data['machine_id'] . ' and Part ID: ' . $data['part_id']);
+            }
+
+            $availablestock = Availablestock::where('machine_id', $data['machine_id'])
+                ->where('part_id', $data['part_id'])
+                ->first();
+
+            if (!$availablestock) {
+                $availablestock = Availablestock::create([
+                    'machine_id' => $data['machine_id'],
+                    'part_id' => $data['part_id'],
+                    'quantity' => 0, 
+                    'minimum_stock_alert' => $data['minimum_stock_alert'],
+                    'created_by' => session('id'),
+                    'updated_by' => session('id'),
+                ]);
+                Log::info('Created new Availablestock: ', $availablestock->toArray());
+            }
+
+            Log::info('Mapped Data: ', $data);
+
+            $data['outgoing'] = $data['outgoing'] ?? 0;
+
+            if ($spare->quantity < $data['outgoing'] || $availablestock->quantity < $data['outgoing']) {
+                Log::error('Insufficient stock for Machine ID: ' . $data['machine_id'] . ' and Part ID: ' . $data['part_id']);
+                return redirect()->back()->with('error', 'Insufficient stock: Unable to process outgoing stock for Machine ID: ' . $data['machine_id'] . ' and Part ID: ' . $data['part_id']);
+            }
+
+            $availablestock->quantity -= $data['outgoing'];
+            $availablestock->save();
+            Log::info('Updated Availablestock: ', $availablestock->toArray());
+
+            $spare->quantity -= $data['outgoing'];
+            $spare->save();
+            Log::info('Updated Spare: ', $spare->toArray());
+
+            $outgoingstock = Outgoingstock::create(array_merge($data, [
+                'quantity' => 0, 
+                'stock_in_hand' => 0, 
+                'created_by' => session('id'),
+                'updated_by' => session('id'),
+            ]));
+
+            if ($outgoingstock) {
+                Log::info('Inserted into Outgoingstock: ', $outgoingstock->toArray());
+            } else {
+                Log::error('Failed to insert into Outgoingstock');
+                throw new \Exception('Failed to insert into Outgoingstock');
+            }
+        }
+
+        DB::commit();
+        return redirect('/stockinventory/outgoingstock')->with('success', 'Stock records processed successfully');
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error('Error during bulk upload: ' . $e->getMessage());
+        Log::error('Error Trace: ' . $e->getTraceAsString()); 
+        return redirect()->back()->with('error', 'Error occurred during bulk upload.');
+    }
 }
 
-
+}

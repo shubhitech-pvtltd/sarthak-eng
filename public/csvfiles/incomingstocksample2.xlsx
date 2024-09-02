@@ -1,0 +1,94 @@
+TABLE
+0,1
+"EXCEL"
+VECTORS
+0,2
+""
+TUPLES
+0,19
+""
+DATA
+0,0
+""
+-1,0
+BOT
+1,0
+"Date"
+1,0
+"Part ID."
+1,0
+"Machine ID"
+1,0
+"Rack"
+1,0
+"Carrot No"
+1,0
+"Quantity"
+1,0
+"Incoming"
+1,0
+"Stock In Hand"
+1,0
+"Minimum Stock Alert"
+1,0
+"Unit"
+1,0
+"Purchasing Price"
+1,0
+"Total Purchasing"
+1,0
+"Selling Price"
+1,0
+"Total Selling Price"
+1,0
+"Export Selling Price"
+1,0
+"GEA Selling Price"
+1,0
+"Description"
+1,0
+"DWG No"
+1,0
+"Dimension"
+-1,0
+BOT
+0,30-08-2024
+V
+0,1
+V
+0,4
+V
+1,0
+"RACK F1"
+1,0
+"D4"
+0,0
+V
+0,5
+V
+0,0
+V
+0,12
+V
+1,0
+"SET"
+0,200
+V
+0,20000
+V
+0,300
+V
+0,30000
+V
+0,50000
+V
+0,25000000
+V
+1,0
+"stock"
+0,1
+V
+0,8
+V
+-1,0
+EOD
